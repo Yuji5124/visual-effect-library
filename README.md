@@ -6,8 +6,8 @@ Three.js / WebGL / GLSL を中心にした **200種類の映像演出の実験�
 カタログを眺めるだけのサムネイル集ではなく、各演出が実際に動き、パラメータを触り、重ね合わせ、
 そのまま他の Three.js ゲーム（MUTOPIA / GIANT CLIMB など）へ移植できることを目的にしています。
 
-- 200件のメタデータ（20カテゴリ × 10件）を登録済み
-- **動く演出 117種**（実装済み 115 + 実験中 2）。全20カテゴリに3種以上
+- 200件のメタデータ（20カテゴリ × 10件）＋ GitHub調査から採用した拡張演出16件（2カテゴリ）
+- **動く演出 133種**（実装済み 131 + 実験中 2）。基本20カテゴリすべてに3種以上、拡張16種はすべて動作
 - 未実装の演出には偽のプレビューを出さず、「未実装」と技術方式だけを表示
 
 ## 使い方
@@ -41,7 +41,7 @@ Windows / macOS / Linux いずれも Node.js 20 以上で動作します。API�
 キーボード: `Esc` 一覧へ / `←` `→` 前後の演出 / `R` ランダム / `F` 全画面 / `P` パネル表示切替。
 生成系の一部（リアクションディフュージョン、ライフゲーム）は画面をドラッグすると干渉できます。
 
-## 実装済みの演出（117種）
+## 基本200種のうち動く演出（117種）
 
 全20カテゴリに3種類以上の動く演出があります。アプリでは「動く演出のみ」フィルタで一覧できます。
 
@@ -70,6 +70,40 @@ Windows / macOS / Linux いずれも Node.js 20 以上で動作します。API�
 
 **POST** = 入力映像を加工する演出（いくつでも重ねられる）。**SOURCE** = 映像を生成する演出（POSTの入力にできる）。
 200種類を同じ技術で無理に作らず、GLSLポストプロセス・フルスクリーン生成シェーダー・GPGPU（ピンポン）・流体ソルバー・フレーム履歴・CPUシミュレーション・インスタンシング・Web Audio を演出ごとに使い分けています。
+
+## 拡張演出（GitHub調査から採用・16種）
+
+GitHub上の主要な演出ライブラリを調査し、**基本200種と重複しないもの**だけを拡張カテゴリ（201〜216）として採用しました。
+コードは複製せず、技法（アイデア）だけを参考に独自実装しています。カードとビューアの「解説」に着想元とライセンスを表示します。
+
+| 調査したリポジトリ | ライセンス | 判断 |
+| --- | --- | --- |
+| [mrdoob/three.js](https://github.com/mrdoob/three.js)（WebGL examples 約290件） | MIT | 採用（技法の参考。`MeshSurfaceSampler`・`DecalGeometry` は three 同梱アドオンを利用） |
+| [pmndrs/postprocessing](https://github.com/pmndrs/postprocessing)（約20効果） | Zlib | 採用（技法の参考） |
+| [gl-transitions](https://github.com/gl-transitions/gl-transitions)（125トランジション） | MIT | 採用（技法の参考） |
+| [LYGIA](https://github.com/patriciogonzalezvivo/lygia)（シェーダー関数集） | Prosperity（非商用）/ Patron | **不採用**：商用利用に別途ライセンスが必要なため |
+
+既存と重複するため採用しなかった例：ブルーム・ゴッドレイ・ハーフトーン・グリッチ・残像（afterimage）・被写界深度・ピクセル化・ソーベル、
+トランジションの cube / burn / ripple / swirl / pixelize / kaleidoscope / heart / windowblinds など。
+
+| ID | 演出 | 着想元 | ライセンス |
+| --- | --- | --- | --- |
+| 201 | アンビエントオクルージョン | pmndrs/postprocessing `SSAOEffect` | Zlib |
+| 202 | 選択アウトライン | pmndrs/postprocessing `OutlineEffect` | Zlib |
+| 203 | 衝撃波 | pmndrs/postprocessing `ShockWaveEffect` | Zlib |
+| 204 | カラーグレーディング（LUT） | pmndrs/postprocessing `LUT3DEffect` | Zlib |
+| 205 | アナグリフ立体視 | mrdoob/three.js examples `webgl_effects_anaglyph` | MIT |
+| 206 | トゥーンシェーディング | mrdoob/three.js examples `webgl_materials_toon` | MIT |
+| 207 | 薄膜干渉 | mrdoob/three.js examples `webgl_loader_gltf_iridescence` | MIT |
+| 208 | デカール | mrdoob/three.js examples `webgl_decals` | MIT |
+| 209 | 海面（ゲルストナー波） | mrdoob/three.js examples `webgl_shaders_ocean` | MIT |
+| 210 | 大気散乱の空 | mrdoob/three.js examples `webgl_shaders_sky` | MIT |
+| 211 | ボリュームクラウド | mrdoob/three.js examples `webgl_volume_cloud` | MIT |
+| 212 | 溶岩 | mrdoob/three.js examples `webgl_shader_lava` | MIT |
+| 213 | N体重力シミュレーション | mrdoob/three.js examples `webgl_gpgpu_protoplanet` | MIT |
+| 214 | ページめくり | gl-transitions `InvertedPageCurl` | MIT |
+| 215 | 画面溶け落ち | gl-transitions `DoomScreenTransition` | MIT |
+| 216 | タイル反転 | gl-transitions `GridFlip` | MIT |
 
 ## 設計
 
@@ -123,7 +157,7 @@ src/
    - 過去フレームが必要なら `extra: historyExtra()`、自分の前回出力が必要なら `extra: feedbackExtra()`、音に反応させるなら `extra: audioExtra()` を指定（`e018-slit-scan.ts`, `e182-long-exposure.ts`, `e151-waveform.ts` を参照）
    - 複数パスやシミュレーションは `PostEffect` / `SourceEffect` を直接実装（`e031-bloom.ts`, `e055-ink-diffusion.ts`, `e132-physarum.ts` を参照）
    - 実験段階なら `status: 'experimental'` を付ける
-2. `npm run registry`（登録表を自動生成）
+2. `npm run registry`（登録表を自動生成。拡張演出は先に `catalog.ts` の `EXT_ROWS` に追加）
 3. `npm test`（パラメータ定義の整合性を自動検査）→ `npm run dev` で「セルフテスト」を実行
 
 ## 他の Three.js ゲームへの移植（MUTOPIA など）

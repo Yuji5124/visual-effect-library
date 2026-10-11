@@ -159,6 +159,24 @@ export const REGISTRY: readonly RegistryEntry[] = [
   { id: '194', kind: 'source', status: 'implemented', file: 'source/e194-living-buildings' },
   { id: '195', kind: 'source', status: 'implemented', file: 'source/e195-rogue-shadow' },
   { id: '199', kind: 'source', status: 'implemented', file: 'source/e199-scale-chain' },
+  // 21. 拡張：レンダリング技法
+  { id: '201', kind: 'source', status: 'implemented', file: 'source/e201-ssao' },
+  { id: '202', kind: 'source', status: 'implemented', file: 'source/e202-outline' },
+  { id: '203', kind: 'post', status: 'implemented', file: 'post/e203-shockwave' },
+  { id: '204', kind: 'post', status: 'implemented', file: 'post/e204-color-grading-lut' },
+  { id: '205', kind: 'source', status: 'implemented', file: 'source/e205-anaglyph' },
+  { id: '206', kind: 'source', status: 'implemented', file: 'source/e206-toon-shading' },
+  { id: '207', kind: 'source', status: 'implemented', file: 'source/e207-thin-film' },
+  { id: '208', kind: 'source', status: 'implemented', file: 'source/e208-decals' },
+  // 22. 拡張：自然・空間・遷移
+  { id: '209', kind: 'source', status: 'implemented', file: 'source/e209-ocean' },
+  { id: '210', kind: 'source', status: 'implemented', file: 'source/e210-atmospheric-sky' },
+  { id: '211', kind: 'source', status: 'implemented', file: 'source/e211-volume-clouds' },
+  { id: '212', kind: 'source', status: 'implemented', file: 'source/e212-lava' },
+  { id: '213', kind: 'source', status: 'implemented', file: 'source/e213-nbody' },
+  { id: '214', kind: 'post', status: 'implemented', file: 'post/e214-page-curl' },
+  { id: '215', kind: 'post', status: 'implemented', file: 'post/e215-screen-melt' },
+  { id: '216', kind: 'post', status: 'implemented', file: 'post/e216-grid-flip' },
 ];
 
 const byId = new Map(REGISTRY.map((r) => [r.id, r]));

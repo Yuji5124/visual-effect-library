@@ -1,5 +1,5 @@
 import './styles/main.css';
-import { CATALOG } from './data/catalog';
+import { BASE_CATALOG, CATALOG, EXTENSION_CATALOG } from './data/catalog';
 import { REGISTRY, availability } from './effects/registry';
 import { CatalogView } from './ui/catalogView';
 import { PreviewManager } from './ui/previewManager';
@@ -76,7 +76,7 @@ function boot(): void {
       h('h1', {}, 'VISUAL EFFECT LIBRARY ', h('span', { class: 'accent', text: '200' })),
       h('p', {
         class: 'stats',
-        text: `全${CATALOG.length}種 · 実装済み ${implemented} · 実験中 ${experimental} · 未実装 ${CATALOG.length - implemented - experimental}`,
+        text: `基本${BASE_CATALOG.length}種＋拡張${EXTENSION_CATALOG.length}種 · 実装済み ${implemented} · 実験中 ${experimental} · 未実装 ${CATALOG.length - implemented - experimental}`,
       }),
     ),
     h(

@@ -250,3 +250,6 @@ pre.code {
   color: var(--text); font-size: 14px; pointer-events: none; text-align: center;
 }
 .notice:empty { display: none; }
+
+.ref { margin: 0; font-size: 11px; color: var(--muted); }
+.kind.ext { color: #9ad0ff; border-color: #36507a; }

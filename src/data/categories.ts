@@ -1,10 +1,12 @@
 export interface Category {
-  /** 1〜20 */
+  /** 1〜20 は基本カテゴリ、21以降は拡張カテゴリ */
   index: number;
   slug: string;
   name: string;
   /** カテゴリのテーマカラー（UIのアクセント用） */
   color: string;
+  /** 拡張カテゴリ（基本の200種以外。GitHub上の既存実装の調査から追加したもの） */
+  extension?: boolean;
 }
 
 export const CATEGORIES: readonly Category[] = [
@@ -28,6 +30,9 @@ export const CATEGORIES: readonly Category[] = [
   { index: 18, slug: 'transition', name: 'トランジション・変身', color: '#5c9dff' },
   { index: 19, slug: 'cinema', name: '映画的・特殊撮影', color: '#ffe0a8' },
   { index: 20, slug: 'surreal', name: 'シュール・異常世界', color: '#ff7a7a' },
+  // ---- 拡張（基本200種と重複しない定番技法。GitHub上の既存ライブラリを調査して選定） ----
+  { index: 21, slug: 'ext-render', name: '拡張：レンダリング技法', color: '#9ad0ff', extension: true },
+  { index: 22, slug: 'ext-nature', name: '拡張：自然・空間・遷移', color: '#ffc59a', extension: true },
 ];
 
 export function categoryByIndex(index: number): Category {
