@@ -3,8 +3,11 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const CATS = ['グリッチ・データ破壊', '時間・残像', 'ピクセル・レトロ', '色彩・光', '空間歪曲', '粒子・流体', 'カメラ・レンズ', '幾何学・生成アート', 'アナログ・物質感', '世界変容・実験表現', '錯視・知覚操作', 'AI・機械視覚', '物理・破壊', '生命・群衆・成長', '文字・情報視覚化', '音響反応・同期', '空間投影・AR', 'トランジション・変身', '映画的・特殊撮影', 'シュール・異常世界'];
+const CATS = ['グリッチ・データ破壊', '時間・残像', 'ピクセル・レトロ', '色彩・光', '空間歪曲', '粒子・流体', 'カメラ・レンズ', '幾何学・生成アート', 'アナログ・物質感', '世界変容・実験表現', '錯視・知覚操作', 'AI・機械視覚', '物理・破壊', '生命・群衆・成長', '文字・情報視覚化', '音響反応・同期', '空間投影・AR', 'トランジション・変身', '映画的・特殊撮影', 'シュール・異常世界', '拡張：レンダリング技法', '拡張：自然・空間・遷移'];
 const root = join(import.meta.dirname, '..', 'src', 'effects');
+// 拡張演出（201〜）のカテゴリは catalog.ts の EXT_ROWS「[番号, カテゴリ, ...」から読む
+const catalogSrc = readFileSync(join(import.meta.dirname, '..', 'src', 'data', 'catalog.ts'), 'utf8');
+const extCategory = new Map([...catalogSrc.matchAll(/^\s*\[(2\d\d), (\d+), '/gm)].map((m) => [Number(m[1]), Number(m[2])]));
 const entries = [];
 for (const kind of ['post', 'source']) {
   for (const f of readdirSync(join(root, kind)).sort()) {
@@ -22,7 +25,10 @@ let cat = -1;
 for (const e of entries) {
   if (ids.has(e.id)) throw new Error(`ID が重複しています: ${e.id}`);
   ids.add(e.id);
-  const c = Math.floor((Number(e.id) - 1) / 10);
+  const n = Number(e.id);
+  const ext = extCategory.get(n);
+  if (n > 200 && !ext) throw new Error(`拡張演出 ${e.id} が catalog.ts にありません`);
+  const c = n <= 200 ? Math.floor((n - 1) / 10) : ext - 1;
   if (c !== cat) {
     cat = c;
     lines.push(`  // ${c + 1}. ${CATS[c]}`);

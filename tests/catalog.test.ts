@@ -1,23 +1,40 @@
 import { describe, expect, it } from 'vitest';
-import { CATALOG, TECH_LABELS } from '../src/data/catalog';
+import { BASE_CATALOG, CATALOG, EXTENSION_CATALOG, TECH_LABELS } from '../src/data/catalog';
 import { CATEGORIES } from '../src/data/categories';
 import { availability } from '../src/effects/registry';
 import { matches, type CatalogFilter } from '../src/ui/catalogView';
 
 describe('カタログ', () => {
-  it('200件・ID連番・重複なし', () => {
-    expect(CATALOG).toHaveLength(200);
-    CATALOG.forEach((e, i) => {
+  it('基本200件・ID連番・重複なし', () => {
+    expect(BASE_CATALOG).toHaveLength(200);
+    BASE_CATALOG.forEach((e, i) => {
       expect(e.num).toBe(i + 1);
       expect(e.id).toBe(String(i + 1).padStart(3, '0'));
     });
-    expect(new Set(CATALOG.map((e) => e.name)).size).toBe(200);
   });
 
-  it('20カテゴリ × 10件', () => {
-    expect(CATEGORIES).toHaveLength(20);
-    for (const c of CATEGORIES) {
-      expect(CATALOG.filter((e) => e.category.index === c.index)).toHaveLength(10);
+  it('基本は20カテゴリ × 10件', () => {
+    const base = CATEGORIES.filter((c) => !c.extension);
+    expect(base).toHaveLength(20);
+    for (const c of base) {
+      expect(BASE_CATALOG.filter((e) => e.category.index === c.index)).toHaveLength(10);
+    }
+  });
+
+  it('拡張演出は201からの連番で、拡張カテゴリに属し、名前が基本200種と重複しない', () => {
+    expect(EXTENSION_CATALOG.length).toBeGreaterThan(0);
+    EXTENSION_CATALOG.forEach((e, i) => {
+      expect(e.num).toBe(201 + i);
+      expect(e.category.extension).toBe(true);
+    });
+    expect(new Set(CATALOG.map((e) => e.id)).size).toBe(CATALOG.length);
+    expect(new Set(CATALOG.map((e) => e.name)).size).toBe(CATALOG.length);
+  });
+
+  it('拡張演出は着想元と、商用利用できるライセンスを記録している', () => {
+    for (const e of EXTENSION_CATALOG) {
+      expect(e.reference?.url).toMatch(/^https:\/\/github\.com\//);
+      expect(['MIT', 'Zlib', 'Apache-2.0', 'BSD-3-Clause']).toContain(e.reference?.license);
     }
   });
 

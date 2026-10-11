@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { FullscreenQuad, makeShader } from './fullscreen';
+import { COPY_FRAGMENT, FullscreenQuad, createTarget, makeShader } from './fullscreen';
 import type {
   EffectContext,
   EffectStatus,
@@ -63,6 +63,11 @@ interface ShaderDefBase {
   /** 追加uniform宣言（例: "uniform sampler2D tGlyphs;"） */
   extraDecl?: string;
   extra?(ctx: EffectContext): ExtraResources;
+  /**
+   * 生成シェーダーのみ：内部解像度の倍率（品質ごと）。重いボリューム描画などを
+   * 縮小バッファで計算し、線形補間で拡大して出力する。
+   */
+  renderScale?: { high: number; low: number };
 }
 
 function buildFragment(isPost: boolean, params: ParamDef[], extraDecl: string | undefined, body: string): string {
@@ -157,17 +162,34 @@ export function defineShaderSource(def: ShaderDefBase): SourceEffect {
     shader: { fragment },
     create(ctx) {
       const parts = makeInstanceParts(def, fragment, ctx, false);
+      const scale = def.renderScale ? def.renderScale[ctx.quality] : 1;
+      const sw = () => Math.max(1, Math.floor(ctx.width * scale));
+      const sh = () => Math.max(1, Math.floor(ctx.height * scale));
+      const low = scale < 1 ? createTarget(sw(), sh()) : null;
+      const copy = low ? makeShader(COPY_FRAGMENT, { tDiffuse: { value: low.texture } }) : null;
+      if (low) (parts.uniforms.uResolution.value as THREE.Vector2).set(sw(), sh());
       return {
         render(target, params, frame) {
           parts.bind(params, frame);
           parts.extra?.beforeRender?.(null);
-          parts.quad.render(ctx.renderer, parts.material, target);
+          parts.quad.render(ctx.renderer, parts.material, low ?? target);
+          if (low && copy) parts.quad.render(ctx.renderer, copy, target);
           parts.extra?.afterRender?.(null, target);
         },
-        resize: parts.resize,
+        resize(w: number, h: number) {
+          parts.resize(w, h);
+          if (low) {
+            low.setSize(sw(), sh());
+            (parts.uniforms.uResolution.value as THREE.Vector2).set(sw(), sh());
+          }
+        },
         pointer: parts.extra?.pointer,
         status: parts.extra?.status,
-        dispose: parts.dispose,
+        dispose() {
+          parts.dispose();
+          low?.dispose();
+          copy?.dispose();
+        },
       };
     },
   };

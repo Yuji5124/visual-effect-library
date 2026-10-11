@@ -671,6 +671,17 @@ export class Viewer {
     const mod = this.modules.get(e.id);
     root.append(
       h('p', { class: 'lead', text: e.description }),
+      ...(e.reference
+        ? [
+            h('h3', { text: '着想元（GitHub調査）' }),
+            h(
+              'p',
+              { class: 'small' },
+              h('a', { href: e.reference.url, target: '_blank', rel: 'noopener noreferrer', text: e.reference.repo }),
+              ` の ${e.reference.item}（${e.reference.license} ライセンス）。コードは複製せず、技法だけを参考に独自実装しています。`,
+            ),
+          ]
+        : []),
       h('h3', { text: '技術方式' }),
       h('ul', { class: 'tech-list' }, ...e.tech.map((t) => h('li', { text: TECH_LABELS[t] }))),
       h('h3', { text: '実装状況' }),

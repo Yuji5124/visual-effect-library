@@ -40,13 +40,15 @@ export const TECH_LABELS: Record<Tech, string> = {
 };
 
 export interface CatalogEntry {
-  /** "001"〜"200" */
+  /** "001"〜"200"（基本）、"201"〜（拡張） */
   id: string;
   num: number;
   name: string;
   category: Category;
   tech: Tech[];
   description: string;
+  /** 拡張演出のみ：着想元（調査したGitHubリポジトリ）とそのライセンス。実装は独自 */
+  reference?: { repo: string; url: string; license: string; item: string };
 }
 
 type Row = [num: number, name: string, tech: Tech[], description: string];
@@ -274,11 +276,43 @@ const ROWS: Row[] = [
   [200, '世界自己編集', ['three-scene', 'cpu-sim'], '世界が自らのオブジェクトを書き換え、再配置し続ける。'],
 ];
 
+type ExtRow = [num: number, category: number, name: string, tech: Tech[], description: string, ref: NonNullable<CatalogEntry['reference']>];
+
+const THREE_EX = { repo: 'mrdoob/three.js（examples）', url: 'https://github.com/mrdoob/three.js/tree/dev/examples', license: 'MIT' };
+const PMNDRS = { repo: 'pmndrs/postprocessing', url: 'https://github.com/pmndrs/postprocessing', license: 'Zlib' };
+const GLT = { repo: 'gl-transitions/gl-transitions', url: 'https://github.com/gl-transitions/gl-transitions', license: 'MIT' };
+
+/**
+ * 拡張演出（201〜）。GitHub上の主要な演出ライブラリを調査し、基本200種と重複しないものだけを採用した。
+ * コードは複製せず、技法（アイデア）だけを参考に独自実装している。reference は着想元の記録。
+ */
+const EXT_ROWS: ExtRow[] = [
+  // 21. 拡張：レンダリング技法
+  [201, 21, 'アンビエントオクルージョン', ['three-scene', 'glsl-post'], '深度と法線から周囲の遮蔽を推定し、隅や接地部分に柔らかい陰りを加える（SSAO）。', { ...PMNDRS, item: 'SSAOEffect' }],
+  [202, 21, '選択アウトライン', ['three-scene', 'glsl-post'], '選択中の物体だけをマスクに描き、その輪郭を太らせて発光する縁取りにする。', { ...PMNDRS, item: 'OutlineEffect' }],
+  [203, 21, '衝撃波', ['glsl-post'], 'クリック位置から広がるリング状の屈折で、爆発や着地の衝撃を表現する。', { ...PMNDRS, item: 'ShockWaveEffect' }],
+  [204, 21, 'カラーグレーディング（LUT）', ['glsl-post'], '3D色変換表（LUT）で映画風の色調（ティール＆オレンジ等）へ一括変換する。', { ...PMNDRS, item: 'LUT3DEffect' }],
+  [205, 21, 'アナグリフ立体視', ['three-scene'], '左右の目の視点で描いた映像を赤と青緑に分けて重ね、赤青メガネで立体に見せる。', { ...THREE_EX, item: 'webgl_effects_anaglyph' }],
+  [206, 21, 'トゥーンシェーディング', ['three-scene'], '陰影を数段階に量子化し、背面法線押し出しの輪郭線を付けてアニメ調にする。', { ...THREE_EX, item: 'webgl_materials_toon' }],
+  [207, 21, '薄膜干渉', ['three-scene'], 'シャボン玉や油膜のように、膜の厚みと視線角度で虹色が移ろう表面を描く。', { ...THREE_EX, item: 'webgl_loader_gltf_iridescence' }],
+  [208, 21, 'デカール', ['three-scene'], '弾痕・ペンキ・足跡などの模様を、物体の表面形状に沿って貼り付ける。', { ...THREE_EX, item: 'webgl_decals' }],
+  // 22. 拡張：自然・空間・遷移
+  [209, 22, '海面（ゲルストナー波）', ['three-scene'], '複数のゲルストナー波を重ねて頂点を動かし、尖った波頭と空の反射を持つ海面を作る。', { ...THREE_EX, item: 'webgl_shaders_ocean' }],
+  [210, 22, '大気散乱の空', ['glsl-gen'], 'レイリー散乱とミー散乱を計算し、太陽の高さに応じて青空から夕焼けへ変わる空を描く。', { ...THREE_EX, item: 'webgl_shaders_sky' }],
+  [211, 22, 'ボリュームクラウド', ['glsl-gen'], '3Dノイズの密度場をレイマーチングし、光の透過を積分して立体的な雲を描く。', { ...THREE_EX, item: 'webgl_volume_cloud' }],
+  [212, 22, '溶岩', ['glsl-gen'], '流れるノイズと冷えて固まる表皮のひび割れで、内側から発光する溶岩流を描く。', { ...THREE_EX, item: 'webgl_shader_lava' }],
+  [213, 22, 'N体重力シミュレーション', ['gpgpu'], '数千個の粒子が互いに万有引力で引き合い、円盤や渦状の構造を作る（原始惑星系）。', { ...THREE_EX, item: 'webgl_gpgpu_protoplanet' }],
+  [214, 22, 'ページめくり', ['glsl-post'], '紙の角がめくれて裏面と影を見せながら、次の場面が現れるトランジション。', { ...GLT, item: 'InvertedPageCurl' }],
+  [215, 22, '画面溶け落ち', ['glsl-post'], '画面が縦の帯ごとに時間差で滑り落ち、下から次の場面が現れる（往年のFPS風）。', { ...GLT, item: 'DoomScreenTransition' }],
+  [216, 22, 'タイル反転', ['glsl-post'], '画面をタイルに分割し、1枚ずつ裏返すように次の場面へ切り替える。', { ...GLT, item: 'GridFlip' }],
+];
+
 export function formatId(num: number): string {
   return String(num).padStart(3, '0');
 }
 
-export const CATALOG: readonly CatalogEntry[] = ROWS.map(([num, name, tech, description]) => ({
+/** 基本の200種（20カテゴリ × 10） */
+export const BASE_CATALOG: readonly CatalogEntry[] = ROWS.map(([num, name, tech, description]) => ({
   id: formatId(num),
   num,
   name,
@@ -286,6 +320,19 @@ export const CATALOG: readonly CatalogEntry[] = ROWS.map(([num, name, tech, desc
   tech,
   description,
 }));
+
+/** 拡張演出（201〜） */
+export const EXTENSION_CATALOG: readonly CatalogEntry[] = EXT_ROWS.map(([num, cat, name, tech, description, reference]) => ({
+  id: formatId(num),
+  num,
+  name,
+  category: categoryByIndex(cat),
+  tech,
+  description,
+  reference,
+}));
+
+export const CATALOG: readonly CatalogEntry[] = [...BASE_CATALOG, ...EXTENSION_CATALOG];
 
 const byId = new Map(CATALOG.map((e) => [e.id, e]));
 

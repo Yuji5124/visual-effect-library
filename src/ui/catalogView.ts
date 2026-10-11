@@ -114,13 +114,14 @@ export class CatalogView {
     });
     this.catNav.append(all);
     for (const c of CATEGORIES) {
-      const playable = CATALOG.filter((e) => e.category.index === c.index && availability(e.id) !== 'planned').length;
+      const inCat = CATALOG.filter((e) => e.category.index === c.index);
+      const playable = inCat.filter((e) => availability(e.id) !== 'planned').length;
       const b = h(
         'button',
         {
           class: `chip cat-chip ${this.filter.category === c.index ? 'active' : ''} ${visibleCats.has(c.index) ? '' : 'dim'}`,
           style: `--cat:${c.color}`,
-          title: `${c.name}（動作 ${playable}/10）`,
+          title: `${c.name}（動作 ${playable}/${inCat.length}）`,
         },
         h('span', { class: 'dot' }),
         `${c.index}. ${c.name}`,
@@ -214,9 +215,11 @@ export class CatalogView {
           h('span', { class: 'num', text: e.id }),
           h('span', { class: `badge status-${st}`, text: AVAILABILITY_LABELS[st] }),
           reg ? h('span', { class: 'kind', text: reg.kind === 'post' ? 'POST' : 'SOURCE' }) : null,
+          e.category.extension ? h('span', { class: 'kind ext', text: '拡張' }) : null,
           favBtn,
         ),
         h('h3', { text: e.name }),
+        e.reference ? h('p', { class: 'ref', text: `着想: ${e.reference.repo}（${e.reference.license}）· 実装は独自` }) : null,
         h('p', { class: 'desc', text: e.description }),
         h('div', { class: 'tags' }, ...e.tech.map((t) => h('span', { class: 'tag', text: TECH_LABELS[t] }))),
       ),
