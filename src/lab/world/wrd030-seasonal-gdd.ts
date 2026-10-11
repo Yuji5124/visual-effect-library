@@ -9,7 +9,7 @@ import { LineChart3D, TreeSet, poissonDisk } from '../framework/natureKit';
 
 const BINS = 48;
 const DAYS = 365;
-const PEAK_M = 2600; // 最高点の標高（m）
+const PEAK_M = 2200; // 最高点の標高（m）
 const BASE_T = 5; // 積算温度の基準温度
 const BUD_GDD = 110; // 芽吹きの積算温度
 const MONTH = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
@@ -29,9 +29,9 @@ export default defineWorldDemo({
     { key: 'lapse', label: '気温減率（°C/1000m）', type: 'number', min: 0, max: 10, step: 0.1, default: 6.5 },
   ],
   liveKeys: ['date', 'play', 'speed'],
-  distance: 14,
-  elevation: 0.7,
-  target: [1.2, 0.8, 0],
+  distance: 16,
+  elevation: 0.75,
+  target: [2, 0.8, 0],
   build(p, env) {
     const n = env.quality === 'low' ? 72 : 96;
     const size = 10, H = 3;
@@ -41,6 +41,7 @@ export default defineWorldDemo({
       return Math.max(0, 1 - d * 1.6) ** 1.4 * 0.8 + fbm2(noise, u * 3, v * 3, 5) * 0.25;
     });
     normalize(elev, 0, 1);
+    for (let k = 0; k < elev.length; k++) elev[k] = elev[k] ** 1.5;
     const lapse = Number(p.lapse);
 
     // 日ごとの気温の揺らぎと降水（全標高で共通、シード固定）
@@ -66,8 +67,8 @@ export default defineWorldDemo({
         let gdd = 0, chill = 0;
         for (let d = 0; d < DAYS; d++) {
           const T = temp(d, alt);
-          if (T < 0.5) pack += rain[d];
-          else pack = Math.max(0, pack - 0.6 * T);
+          if (T < 0.5) pack += rain[d] * 0.5;
+          else pack = Math.max(0, pack - 1.5 * T);
           t7[d % 7] = T;
           if (pass === 0) continue;
           gdd += Math.max(0, T - BASE_T);
@@ -78,7 +79,7 @@ export default defineWorldDemo({
           const k = b * DAYS + d;
           leaf[k] = Math.min(spring, 1 - fall);
           autumn[k] = Math.min(1, chill / 70);
-          snow[k] = Math.min(1, pack / 12);
+          snow[k] = Math.min(1, pack / 8);
           if (b === 0) tLow[d] = T;
           if (b === BINS - 1) tHigh[d] = T;
         }
@@ -108,8 +109,7 @@ export default defineWorldDemo({
 
     // 気温グラフ
     const chart = new LineChart3D(4.4, 2.6, [0xffa040, 0x6fd0ff, 0xffffff, 0x445080], DAYS);
-    chart.group.position.set(size / 2 + 0.8, 0.2, -2.2);
-    chart.group.rotation.y = -0.4;
+    chart.group.position.set(size / 2 + 0.6, 0.2, -1.5);
     const u = Array.from({ length: DAYS }, (_, d) => d / (DAYS - 1));
     const tv = (T: number) => (T + 25) / 60;
     chart.set(0, u, Array.from(tLow, tv));

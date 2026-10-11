@@ -18,8 +18,9 @@ export default defineWorldDemo({
     { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 2, max: 60, step: 1, default: 30 },
   ],
   liveKeys: ['speed'],
-  distance: 14,
-  elevation: 0.8,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期（まばらな森）', '時間発展'],
   build(p, env) {
     const N = env.quality === 'low' ? Math.min(72, Number(p.size)) : Number(p.size);
@@ -96,7 +97,7 @@ export default defineWorldDemo({
         const s = g[k];
         if (s === TREE) {
           const a = Math.min(1, age[k] / 200);
-          f.setRGB(k, 0.12 + 0.3 * a, 0.18 - 0.08 * a, 0.5 - 0.18 * a, 0.16);
+          f.setRGB(k, 0.12 + 0.3 * a, 0.3 - 0.12 * a, 0.75 - 0.25 * a, 0.25);
         } else if (s === FIRE) f.setRGB(k, 0.55, 1, 0.55, 0.1);
         else if (burnt[k]) f.setRGB(k, 0.02, 0.22 + burnt[k] * 0.03, 0.12, 0.08);
         else f.setRGB(k, 0.02, 0.36, 0.3, 0.22);

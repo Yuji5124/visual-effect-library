@@ -69,8 +69,8 @@ export default defineMotionDemo({
       const R = 3.2;
       // 開始点を乱数で置き、角度順に円周の目標を割り当てる（経路が交差しにくい）
       const tmp = agents.map((ag) => {
-        ag.sx = (env.rng() * 2 - 1) * (w - 1);
-        ag.sy = -h + 5 + env.rng() * (2 * h - 6);
+        ag.sx = (env.rng() * 2 - 1) * (w - 1.5);
+        ag.sy = -h + 5 + env.rng() * (2 * h - 6.5);
         return ag;
       });
       tmp.sort((a, b) => Math.atan2(a.sy - cy, a.sx - cx) - Math.atan2(b.sy - cy, b.sx - cx));

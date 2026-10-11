@@ -42,7 +42,7 @@ export default defineWorldDemo({
   compareLabels: ['植生なしの地形', '環境で決めた植生'],
   build(p, env) {
     const n = env.quality === 'low' ? 72 : 96;
-    const size = 10, H = 2.6, cell = size / (n - 1);
+    const size = 10, H = 2.2, cell = size / (n - 1);
     const noise = makeNoise2(env.seed);
     const elev = gridFrom(n, (u, v) => {
       const ridge = 1 - Math.abs(fbm2(noise, u * 1.7 + 3, v * 1.7 + 7, 4));
@@ -109,6 +109,9 @@ export default defineWorldDemo({
     const balls = new TreeSet(g * g, 'ball');
     const tuftGeo = new THREE.ConeGeometry(0.5, 1, 5);
     tuftGeo.translate(0, 0.5, 0);
+    const shrubGeo = new THREE.IcosahedronGeometry(0.5, 0);
+    shrubGeo.translate(0, 0.5, 0);
+    const shrubs = new InstSet(shrubGeo, new THREE.MeshStandardMaterial({ roughness: 0.9, flatShading: true }), g * g);
     const tufts = new InstSet(tuftGeo, new THREE.MeshStandardMaterial({ roughness: 0.9, flatShading: true }), g * g);
     const counts = [0, 0, 0, 0];
     const col = new THREE.Color();
@@ -126,7 +129,7 @@ export default defineWorldDemo({
         col.setHex(SPECIES[b].color, THREE.SRGBColorSpace).offsetHSL((env.rng() - 0.5) * 0.04, 0, (env.rng() - 0.5) * 0.08);
         if (b === 0) cones.put(x, y, z, 0.55 * s, 0.13 * s, col);
         else if (b === 1) balls.put(x, y, z, 0.45 * s, 0.16 * s, col);
-        else if (b === 2) balls.put(x, y, z, 0.16 * s, 0.1 * s, col, 0x5a4a30);
+        else if (b === 2) shrubs.put(x, y, z, 0.2 * s, 0.14 * s, 0.2 * s, env.rng() * 6, col);
         else tufts.put(x, y, z, 0.07 * s, 0.09 * s, 0.07 * s, env.rng() * 6, col);
         counts[b]++;
       }
@@ -134,9 +137,10 @@ export default defineWorldDemo({
     cones.commit();
     balls.commit();
     tufts.commit();
+    shrubs.commit();
     const object = new THREE.Group();
     const plants = new THREE.Group();
-    plants.add(cones.group, balls.group, tufts.mesh);
+    plants.add(cones.group, balls.group, shrubs.mesh, tufts.mesh);
     object.add(hf.mesh, plants);
     plants.visible = view === 'placement';
 

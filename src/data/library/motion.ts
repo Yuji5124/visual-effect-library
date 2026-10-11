@@ -393,7 +393,7 @@ const SPECS: EntrySpec[] = [
     id: 'MOT-048', nameJa: '物理シミュレーションの巻き戻し', nameEn: 'Rewinding a Physics Simulation', sub: 'MOT-E',
     description: '衝突する粒子の物理シミュレーションを状態の履歴として保存し、任意の時刻まで巻き戻して再開する。',
     principle: '多くの物理演算は逆向きに解くと不安定なので、各ステップの状態（位置・速度）をリングバッファに保存して巻き戻す。巻き戻した時点から再開すると、決定的なシミュレーションなら同じ未来になる。',
-    implementation: '固定ステップの衝突シミュレーションと状態履歴。巻き戻しボタンを押している間は逆再生し、離すと再開。巻き戻し後にクリックで粒子を押すと別の未来に分岐する。',
+    implementation: '固定ステップの衝突シミュレーションと状態履歴。巻き戻しボタンで逆再生／再開を切り替える（自動モードでは周期的に巻き戻して分岐させる）。巻き戻し後にクリックで粒子を押すと別の未来に分岐し、元の未来を薄く表示する。再開後の未来が保存済みの未来と一致すること（決定性）も数値で確認できる。',
     refs: [W('Braid (video game)', 'Braid_(video_game)'), GAFFER],
     parameters: ['履歴の長さ', '巻き戻し速度', '粒子数'], tags: ['巻き戻し', '状態履歴', '決定性'], related: ['015', 'MOT-041'], perf: 'light', mobile: 'good',
   },
@@ -408,7 +408,7 @@ const SPECS: EntrySpec[] = [
   {
     id: 'MOT-050', nameJa: '数値積分法の比較', nameEn: 'Integrators: Euler, Symplectic, RK4', sub: 'MOT-E',
     description: '同じ軌道運動を前進オイラー・半陰的オイラー・速度ベルレ・RK4 で積分し、エネルギーのずれを比べる。',
-    principle: '前進オイラーは軌道が外へ広がりエネルギーが増え続ける。半陰的オイラーやベルレは「シンプレクティック」でエネルギーが長期的に保たれる。RK4 は1ステップの精度が高いが、長時間ではわずかに減衰する。',
+    principle: '前進オイラーは軌道が外へ広がりエネルギーが増え続ける。半陰的オイラーやベルレは「シンプレクティック」でエネルギーが長期的に保たれる。RK4 は1ステップの精度が高いが、シンプレクティックではないため、誤差は長時間でゆっくり一方向に蓄積する。',
     implementation: '4つの積分法の軌道を同じ初期条件から描き、全エネルギーの相対誤差を時間グラフで表示する。刻み幅を大きくすると違いが顕著になる。',
     refs: [W('Symplectic integrator', 'Symplectic_integrator'), W('Runge–Kutta methods', 'Runge%E2%80%93Kutta_methods'), W('Verlet integration', 'Verlet_integration')],
     parameters: ['刻み幅', '表示する積分法', '軌道の離心率'], tags: ['数値積分', 'シンプレクティック', 'エネルギー保存'], related: ['MOT-019', 'MOT-049'], perf: 'light', mobile: 'good',

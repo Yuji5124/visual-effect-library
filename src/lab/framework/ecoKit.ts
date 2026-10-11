@@ -136,3 +136,21 @@ export function poissonCount(rng: () => number, lambda: number): number {
   } while (p > L && k < 1000);
   return k - 1;
 }
+
+/** 高さ格子のうち水位より低いセルだけを覆う水面（地形の外へはみ出さない） */
+export function waterCells(h: ArrayLike<number>, n: number, size: number, level: number, y: number, color = 0x2a6fb8, opacity = 0.6): THREE.Mesh {
+  const pos: number[] = [];
+  const wx = (i: number) => (i / (n - 1) - 0.5) * size;
+  for (let j = 0; j < n - 1; j++) {
+    for (let i = 0; i < n - 1; i++) {
+      const k = j * n + i;
+      if (h[k] >= level && h[k + 1] >= level && h[k + n] >= level && h[k + n + 1] >= level) continue;
+      const x0 = wx(i), x1 = wx(i + 1), z0 = wx(j), z1 = wx(j + 1);
+      pos.push(x0, y, z0, x0, y, z1, x1, y, z0, x1, y, z0, x0, y, z1, x1, y, z1);
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos.length ? pos : [0, y, 0, 0, y, 0, 0, y, 0], 3));
+  geo.computeVertexNormals();
+  return new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color, transparent: true, opacity, roughness: 0.15, metalness: 0.1, depthWrite: false }));
+}

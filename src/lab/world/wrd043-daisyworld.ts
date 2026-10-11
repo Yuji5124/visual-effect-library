@@ -15,13 +15,14 @@ export default defineWorldDemo({
   notes: '各セルの放射平衡温度 T⁴=S·L·(1−アルベド)/σ を熱の拡散で平滑化して局所温度とし、空き地は隣のヒナギクから成長率 β(T)=1−0.003265(295.5−T)² で種を受け、ヒナギクは死亡率 γ で枯れる。光度 L を 0.65→1.7 へ上げると、黒→白の順に優勢が移り、温度が広い範囲で保たれる。柱の高さは局所温度、左のグラフは平均温度（橙）とヒナギクなしの温度（灰）、右は白（白）・黒（灰青）の被覆率。',
   params: [
     { key: 'lumRate', label: '光度の上昇速度（/1000ステップ）', type: 'number', min: 0.5, max: 6, step: 0.1, default: 1.8 },
-    { key: 'death', label: '死亡率 γ', type: 'number', min: 0.05, max: 0.6, step: 0.01, default: 0.3 },
-    { key: 'diffusion', label: '熱の拡散', type: 'number', min: 0, max: 0.95, step: 0.01, default: 0.35 },
+    { key: 'death', label: '死亡率 γ', type: 'number', min: 0.05, max: 0.6, step: 0.01, default: 0.25 },
+    { key: 'diffusion', label: '熱の拡散', type: 'number', min: 0, max: 0.95, step: 0.01, default: 0.6 },
     { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 2, max: 60, step: 1, default: 25 },
   ],
   liveKeys: ['speed'],
-  distance: 15,
-  elevation: 0.7,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期（L=0.65・まばらな種）', '時間発展'],
   build(p, env) {
     const N = env.quality === 'low' ? 48 : 64;
@@ -97,7 +98,7 @@ export default defineWorldDemo({
       for (let k = 0; k < N * N; k++) {
         const t = T[k];
         if (g[k] === 1) f.setRGB(k, TH(t), 0.95, 0.95, 0.92);
-        else if (g[k] === 2) f.setRGB(k, TH(t), 0.12, 0.13, 0.18);
+        else if (g[k] === 2) f.setRGB(k, TH(t), 0.2, 0.19, 0.27);
         else {
           // 裸地は温度で色を変える（寒い=青灰、暑い=赤茶）
           const u = Math.min(1, Math.max(0, (t - 260) / 80));

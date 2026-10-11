@@ -2,9 +2,9 @@ import * as THREE from 'three';
 import { defineWorldDemo } from '../framework/sceneLab';
 import { fbm2, makeNoise2 } from '../framework/random';
 import { Heightfield, segments } from '../framework/worldKit';
-import { contourSegments, gridFrom, normalize, waterPlane } from '../framework/terrainKit';
+import { contourSegments, gridFrom, normalize } from '../framework/terrainKit';
 import { InstSet, TreeSet, heatColor } from '../framework/natureKit';
-import { chamferDistance } from '../framework/ecoKit';
+import { chamferDistance, waterCells } from '../framework/ecoKit';
 
 /** WRD-029 水辺からの距離による植生帯：チャンファー距離変換で帯を割り当てる */
 
@@ -50,7 +50,7 @@ export default defineWorldDemo({
       const channel = Math.exp(-((dz / 0.025) ** 2));
       const dl = Math.hypot(u - lake.u, v - lake.v) / lake.r;
       const pond = Math.exp(-dl * dl);
-      return 0.18 + base * 0.35 + valley * 0.45 - channel * 0.16 - pond * 0.3;
+      return 0.18 + base * 0.35 + valley * 0.45 - channel * 0.16 - pond * 0.55;
     });
     normalize(h, 0, 1);
     const level = Number(p.water), band = Number(p.band), wob = Number(p.wobble), gwK = Number(p.groundwater);
@@ -122,7 +122,7 @@ export default defineWorldDemo({
     const plants = new THREE.Group();
     plants.add(pads.mesh, reeds.mesh, trees.group, tufts.mesh);
     const object = new THREE.Group();
-    object.add(hf.mesh, waterPlane(size, level * H, 0x2a6fb8, 0.6), plants);
+    object.add(hf.mesh, waterCells(h, n, size, level, level * H), plants);
     plants.visible = view === 'zones';
 
     // 等値線：地形の高さに沿わせて少し浮かせる
@@ -145,7 +145,7 @@ export default defineWorldDemo({
     const hb = new Heightfield(n, size);
     hb.setHeights(h, H);
     hb.setColors((k, c) => c.setRGB(0.45 + h[k] * 0.25, 0.42 + h[k] * 0.2, 0.32));
-    bare.add(hb.mesh, waterPlane(size, level * H, 0x2a6fb8, 0.6));
+    bare.add(hb.mesh, waterCells(h, n, size, level, level * H));
     const land = zc[1] + zc[2] + zc[3] || 1;
     return {
       object,

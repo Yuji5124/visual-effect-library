@@ -14,12 +14,13 @@ export default defineWorldDemo({
     { key: 'U', label: '隆起速度 U', type: 'number', min: 0.002, max: 0.03, step: 0.001, default: 0.01 },
     { key: 'K', label: '侵食係数 K', type: 'number', min: 0.003, max: 0.05, step: 0.001, default: 0.012 },
     { key: 'm', label: 'm/n（n=1）', type: 'number', min: 0.3, max: 0.7, step: 0.01, default: 0.5 },
-    { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 2, max: 40, step: 1, default: 20 },
-    { key: 'vscale', label: '高さの表示倍率', type: 'number', min: 0.3, max: 3, step: 0.05, default: 1 },
+    { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 2, max: 40, step: 1, default: 12 },
+    { key: 'vscale', label: '高さの表示倍率', type: 'number', min: 0.5, max: 6, step: 0.1, default: 2.5 },
   ],
   liveKeys: ['speed', 'vscale'],
-  distance: 14,
-  elevation: 0.75,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期（ほぼ平らな面）', '侵食と隆起の後'],
   build(p, env) {
     const n = env.quality === 'low' ? 48 : 64;

@@ -27,7 +27,7 @@ export default defineWorldDemo({
     { key: 'wallHeight', label: '壁の高さ', type: 'number', min: 0.1, max: 1.2, step: 0.05, default: 0.5 },
   ],
   liveKeys: ['splits', 'viewDepth'],
-  distance: 13,
+  distance: 15.5,
   elevation: 1.05,
   compareLabels: ['BSP の葉（区画）', '部屋と通路'],
   build(p, env) {

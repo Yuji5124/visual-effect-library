@@ -2,6 +2,7 @@ import type { ParamValues } from '../../engine/types';
 import { defineMotionDemo } from '../framework/motionLab';
 import { Trail } from '../framework/draw2d';
 import { hsl } from '../framework/crowdKit';
+import { PointerTracker } from '../framework/steerKit';
 
 const CURVES: Record<string, (u: number) => number> = {
   linear: (u) => u,
@@ -35,6 +36,7 @@ export default defineMotionDemo({
     let stopLeft = 0, recoverT = 1e9, scale = 1, shakeAmp = 0, realT = 0, hits = 0, frozenTotal = 0;
     const rings: { x: number; y: number; age: number }[] = [];
     const HIST = 240;
+    const pt = new PointerTracker();
     const hist = new Float32Array(HIST).fill(1);
     let histHead = 0, histAcc = 0;
     const impact = (x: number, y: number, strength: number, p: ParamValues) => {
@@ -128,7 +130,7 @@ export default defineMotionDemo({
         g.rect(gx0 + gw - 0.3, gy0, 0.3, scale * gh, scale < 0.05 ? 0xff4d6d : 0x7dff8a, { fill: true });
       },
       pointer(x, y, down) {
-        if (!down) return;
+        if (pt.update(down) !== 'press') return;
         let best = balls[0], bd = Infinity;
         for (const b of balls) { const d = Math.hypot(b.x - x, b.y - y); if (d < bd) { bd = d; best = b; } }
         const dx = best.x - x, dy = best.y - y, d = Math.hypot(dx, dy) || 1;

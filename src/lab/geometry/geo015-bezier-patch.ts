@@ -150,6 +150,11 @@ export default defineGeometryDemo({
         }
         evalSurface();
         updateHelpers(Boolean(live.showNet));
+        // 比較用の制御網も同じ制御点に追従させる
+        const bp = bgeo.attributes.position as THREE.BufferAttribute;
+        for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) bp.setXYZ(i * 4 + j, P[i][j].x, P[i][j].y, P[i][j].z);
+        bp.needsUpdate = true;
+        bgeo.computeVertexNormals();
       },
     };
   },

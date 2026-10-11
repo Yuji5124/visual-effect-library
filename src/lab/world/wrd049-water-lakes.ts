@@ -13,8 +13,8 @@ export default defineWorldDemo({
   id: 'WRD-049',
   notes: '各セルの4辺に仮想の管を置き、水面高の差×g×Δt で流量を加速し、流出量が水深を超えないよう係数で縮めてから水深を更新する（Mei ら 2007 の仮想パイプ法）。外周からは水が流れ出る。一様な雨と一定速度の蒸発を加えると、窪地が埋まって湖になり、出口の高さで水位が釣り合う。「局所的な豪雨」で一点に強い雨を降らせる。グラフは総水量（青）と水域の面積率（水色）。',
   params: [
-    { key: 'rain', label: '雨量', type: 'number', min: 0, max: 0.15, step: 0.005, default: 0.03 },
-    { key: 'evap', label: '蒸発率', type: 'number', min: 0, max: 0.15, step: 0.005, default: 0.03 },
+    { key: 'rain', label: '雨量', type: 'number', min: 0, max: 0.15, step: 0.005, default: 0.04 },
+    { key: 'evap', label: '蒸発率', type: 'number', min: 0, max: 0.1, step: 0.002, default: 0.012 },
     { key: 'flow', label: '流れの速さ（ステップ/フレーム）', type: 'number', min: 1, max: 8, step: 1, default: 4 },
     { key: 'relief', label: '地形の起伏', type: 'number', min: 4, max: 16, step: 0.5, default: 9 },
   ],
@@ -23,8 +23,9 @@ export default defineWorldDemo({
   onAction(key) {
     if (key === 'storm') stormRequests++;
   },
-  distance: 14,
-  elevation: 0.7,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['雨が降る前の地形', '水の流れと湖'],
   build(p, env) {
     const n = env.quality === 'low' ? 48 : 64;
@@ -108,7 +109,7 @@ export default defineWorldDemo({
     const water = new Heightfield(n, size, { material: waterMat });
     const wh = new Float32Array(n * n);
     const drawWater = () => {
-      for (let k = 0; k < n * n; k++) wh[k] = d[k] > 0.02 ? b[k] + d[k] : b[k] - 0.6;
+      for (let k = 0; k < n * n; k++) wh[k] = d[k] > 0.08 ? b[k] + d[k] : b[k] - 0.6;
       water.setHeights(wh, cell);
       water.setColors((k, out) => {
         const t = Math.min(1, d[k] / 2.5);
@@ -125,7 +126,7 @@ export default defineWorldDemo({
       let vol = 0, wet = 0, lake = 0;
       for (let k = 0; k < n * n; k++) {
         vol += d[k];
-        if (d[k] > 0.05) wet++;
+        if (d[k] > 0.08) wet++;
         if (d[k] > 0.5) lake++;
       }
       return { vol, wet: wet / (n * n), lake };

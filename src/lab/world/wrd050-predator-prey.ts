@@ -4,7 +4,7 @@ import { N8, Ticker } from '../framework/worldKit';
 import { ColumnField, TimeChart, XYTrace } from '../framework/caKit';
 import { AgentDots, chartSlot } from '../framework/dynKit';
 
-const SHEEP_CAP = 4000, WOLF_CAP = 1500;
+const SHEEP_CAP = 6000, WOLF_CAP = 2500;
 const SHEEP_GAIN = 4, WOLF_GAIN = 20;
 
 /** 個体群（位置とエネルギー）を詰めた配列で持つ */
@@ -42,19 +42,20 @@ class Herd {
 /** WRD-050 空間的な捕食者・被食者：草（再生カウンタ）＋草食・肉食エージェント（エネルギー・繁殖・死亡） */
 export default defineWorldDemo({
   id: 'WRD-050',
-  notes: '草はセルごとに「生えている／再生待ち」で、食べられると再生速度に応じた時間で戻る。羊（白）と狼（赤）は毎ステップ8近傍へ動いて1のエネルギーを使い、羊は草を食べて +4、狼は同じセルの羊を食べて +20、確率（繁殖率）で分裂してエネルギーを分け、0未満で死ぬ。周期境界の格子上で、局所的な絶滅と再侵入の波が広がる。左のグラフは草/4（緑）・羊（白）・狼×4（赤）の個体数、右は羊–狼の位相平面。',
+  notes: '草はセルごとに「生えている／再生待ち」で、食べられると再生速度に応じた時間で戻る。羊（白）と狼（赤）は毎ステップ8近傍へ動いて1のエネルギーを使い、羊は草を食べて +4、狼は同じセルの羊を食べて +20、確率（繁殖率）で分裂してエネルギーを分け、0未満で死ぬ。周期境界の格子上で、局所的な絶滅と再侵入の波が広がる（全滅した種はごく稀に外から移入する）。左のグラフは草/4（緑）・羊（白）・狼×4（赤）の個体数、右は羊–狼の位相平面。',
   params: [
-    { key: 'regrow', label: '草の再生速度（1/再生時間）', type: 'number', min: 0.01, max: 0.2, step: 0.005, default: 0.035 },
-    { key: 'sheepRep', label: '草食の繁殖率', type: 'number', min: 0.01, max: 0.15, step: 0.005, default: 0.04 },
+    { key: 'regrow', label: '草の再生速度（1/再生時間）', type: 'number', min: 0.01, max: 0.2, step: 0.005, default: 0.05 },
+    { key: 'sheepRep', label: '草食の繁殖率', type: 'number', min: 0.01, max: 0.15, step: 0.005, default: 0.08 },
     { key: 'wolfRep', label: '肉食の繁殖率', type: 'number', min: 0.01, max: 0.15, step: 0.005, default: 0.05 },
     { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 1, max: 40, step: 1, default: 12 },
   ],
   liveKeys: ['speed'],
-  distance: 14,
-  elevation: 0.8,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期配置', '時間発展'],
   build(p, env) {
-    const N = env.quality === 'low' ? 40 : 50;
+    const N = env.quality === 'low' ? 56 : 80;
     const size = 10;
     const rng = env.rng;
     const regrowT = Math.max(1, Math.round(1 / Number(p.regrow)));
@@ -63,8 +64,8 @@ export default defineWorldDemo({
     const grass = new Int32Array(N * N);
     for (let k = 0; k < N * N; k++) grass[k] = rng() < 0.5 ? 0 : 1 + ((rng() * regrowT) | 0);
     const sheep = new Herd(SHEEP_CAP), wolves = new Herd(WOLF_CAP);
-    for (let i = 0; i < 200; i++) sheep.add((rng() * N) | 0, (rng() * N) | 0, rng() * 2 * SHEEP_GAIN);
-    for (let i = 0; i < 50; i++) wolves.add((rng() * N) | 0, (rng() * N) | 0, rng() * 2 * WOLF_GAIN);
+    for (let i = 0; i < (N * N) / 10; i++) sheep.add((rng() * N) | 0, (rng() * N) | 0, rng() * 2 * SHEEP_GAIN);
+    for (let i = 0; i < (N * N) / 40; i++) wolves.add((rng() * N) | 0, (rng() * N) | 0, rng() * 2 * WOLF_GAIN);
     const head = new Int32Array(N * N);
     const next = new Int32Array(SHEEP_CAP);
     let steps = 0;
@@ -115,6 +116,9 @@ export default defineWorldDemo({
       sheep.compact();
       wolves.compact();
       for (let k = 0; k < N * N; k++) if (grass[k] > 0) grass[k]--;
+      // 全滅した種は、ごく稀に外から数頭が移入する（再侵入の種）
+      if (sheep.n === 0 && rng() < 0.01) for (let i = 0; i < 4; i++) sheep.add((rng() * N) | 0, (rng() * N) | 0, SHEEP_GAIN);
+      if (wolves.n === 0 && rng() < 0.01) for (let i = 0; i < 4; i++) wolves.add((rng() * N) | 0, (rng() * N) | 0, WOLF_GAIN);
       steps++;
     };
     const grassCount = () => {

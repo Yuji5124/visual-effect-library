@@ -1,5 +1,5 @@
 import type { ParamValues } from '../../engine/types';
-import { defineMotionDemo } from '../framework/motionLab';
+import { defineMotionDemo, type MotionSim } from '../framework/motionLab';
 import { Trail } from '../framework/draw2d';
 import { hsl } from '../framework/crowdKit';
 import { PointerTracker } from '../framework/steerKit';
@@ -35,7 +35,7 @@ export default defineMotionDemo({
     { key: 'playSpeed', label: '再生速度', type: 'number', min: 0.25, max: 3, step: 0.05, default: 1 },
     { key: 'lap', label: '周回の長さ（秒）', type: 'number', min: 2, max: 12, step: 0.5, default: 5 },
   ],
-  create(env) {
+  create(env, p0) {
     const pl = { x: 0, y: 0, vx: 0, vy: 0 };
     let wx = 0, wy = 0, px = 0, py = 0, dragging = false;
     const pt = new PointerTracker();
@@ -74,7 +74,7 @@ export default defineMotionDemo({
       clips.push(cur);
       while (clips.length > Math.round(Number(p.ghosts))) clips.shift();
     };
-    return {
+    const sim: MotionSim = {
       step(dt, p) {
         if (dt <= 0) return;
         // プレイヤー：ドラッグ中はポインタへ、そうでなければ乱数の経由点へ
@@ -153,6 +153,9 @@ export default defineMotionDemo({
         return `${recording ? '● 記録中' : '■ 停止'} ${lapT.toFixed(1)}/${Number(p.lap).toFixed(1)}s · ゴースト ${clips.length} · 最新のサンプル数 ${samples} · 補間誤差（最大）${lastErr.toFixed(3)} · ドラッグで操作`;
       },
     };
+    // 最初から数本のゴーストが見えるよう、自動操縦で2周ぶん先に進めておく
+    for (let i = 0, m = Math.ceil(Number(p0.lap) * 2.05 * 60); i < m; i++) sim.step(1 / 60, p0);
+    return sim;
   },
   extraActions: [{ key: 'rec', label: '● 記録 開始／停止' }, { key: 'clear', label: '✕ ゴースト消去' }],
 });

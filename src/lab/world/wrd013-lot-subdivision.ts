@@ -7,7 +7,7 @@ import { addRoads, insetBy, lotsOfBlock, makeAPoly, outlinePoints, polyArea, pol
 
 export default defineWorldDemo({
   id: 'WRD-013',
-  notes: '再帰分割で作った街区（凸多角形）ごとに、各道路辺から奥行きぶんの帯をとる。帯どうしの境は「どの辺に一番近いか」で決め（凸多角形の直線骨格）、帯を辺に沿って間口で等分して敷地にするので、すべての敷地が道路に接する（接道辺を黄色で強調）。奥行きより内側の残りは中庭（緑・木）として残し、「中庭を残す」を切ると敷地が街区の中心まで伸びる。',
+  notes: '再帰分割で作った街区（凸多角形）ごとに、各道路辺から奥行きぶんの帯をとる。帯を辺に沿って間口で等分して敷地にするので、すべての敷地が道路に接する（接道辺を黄色、角地のもう1辺を橙で強調）。帯どうしの境は長い辺を優先して角地を作る。奥行きより内側の残りは中庭（緑・木）として残し、「中庭を残す」を切ると、どの辺に一番近いか（凸多角形の直線骨格）で街区全体を分け、敷地が中心まで伸びる。',
   params: [
     { key: 'frontage', label: '間口', type: 'number', min: 0.2, max: 1.5, step: 0.01, default: 0.5 },
     { key: 'depth', label: '奥行き', type: 'number', min: 0.2, max: 1.6, step: 0.01, default: 0.62 },
@@ -56,12 +56,12 @@ export default defineWorldDemo({
         c.setHSL(0.08 + rng() * 0.12, 0.35 + rng() * 0.2, 0.55 + rng() * 0.15);
         lotItems.push({ pts: shown.pts, base: 0.035, height: 0.03 + rng() * 0.015, color: c.getHex(), side: 0x7d7262 });
         lotLines.push(...outlinePoints([lot.poly.pts], 0.085));
-        // 接道辺
-        const f = lot.poly.attr.findIndex((v) => v >= 0);
-        if (f >= 0) {
+        // 接道辺（角地は2辺）
+        lot.poly.attr.forEach((v, f) => {
+          if (v < 0) return;
           const s = stripArgs(lot.poly.pts[f], lot.poly.pts[(f + 1) % lot.poly.pts.length], 0, false);
-          fronts.add(s.x, 0.09, s.z, s.len * 0.86, 0.02, 0.05, 0xffd54a, s.ry);
-        }
+          if (s.len > 0.02) fronts.add(s.x, 0.09, s.z, s.len * 0.86, 0.02, 0.05, f === lot.front ? 0xffd54a : 0xff9b3d, s.ry);
+        });
       }
       if (court) {
         courtArea += polyArea(court.pts);

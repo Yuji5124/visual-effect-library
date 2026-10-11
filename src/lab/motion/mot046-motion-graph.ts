@@ -43,7 +43,7 @@ export default defineMotionDemo({
       key: 'policy', label: '選択方針', type: 'select', default: 'goal',
       options: [{ value: 'goal', label: '目標に近づく区間' }, { value: 'random', label: 'ランダム' }],
     },
-    { key: 'tolerance', label: 'つなぎ目の許容差', type: 'number', min: 0.1, max: 3, step: 0.05, default: 0.8 },
+    { key: 'tolerance', label: 'つなぎ目の許容差', type: 'number', min: 0.1, max: 3, step: 0.05, default: 0.4 },
   ],
   resetKeys: ['segLen', 'tolerance'],
   create(env, p0) {
@@ -142,7 +142,7 @@ export default defineMotionDemo({
         const { w, h } = env.bounds();
         // 左上：記録経路のライブラリと区間の切れ目
         clips.forEach((c, ci) => {
-          let lx = -w + 1, ly = h - 1.5 - ci * 2.3, lth = 0;
+          let lx = -w + 0.8 + ci * Math.min(5, (w * 2 - 2) / 4), ly = h - 3.6, lth = 0;
           const sc = 0.3;
           const col = hsl(c.hue, 0.7, 0.6);
           for (let i = 0; i < c.v.length; i++) {

@@ -14,7 +14,7 @@ const R = 3;
 /** WRD-042 土地利用変化CA（White & Engelen 型）：近傍の引力/斥力の表×アクセス性×ランダム項で需要ぶんを割り当てる */
 export default defineWorldDemo({
   id: 'WRD-042',
-  notes: '各セルの用途 k へのポテンシャル＝(1+Σ 近傍用途ごとの引力/斥力の重み(距離1〜3)＋慣性)×道路へのアクセス性×(1+ランダム項)。毎年、住宅・商業・工業の需要（セル数）を増やし、全セル×用途の組をポテンシャルの高い順に需要が満たされるまで割り当てる。商業の集積度と工業↔住宅の斥力で分布が変わる。グラフは住宅（橙）・商業（赤）・工業（紫）・森林（緑）の面積。',
+  notes: '各セルの用途 k へのポテンシャル＝max(0, 0.1＋Σ 近傍用途ごとの引力/斥力の重み(距離1〜3)＋慣性)×道路へのアクセス性×(1+ランダム項)。毎年、住宅・商業・工業の需要（セル数）を増やし、全セル×用途の組をポテンシャルの高い順に需要が満たされるまで割り当てる。商業の集積度と工業↔住宅の斥力で分布が変わる。グラフは住宅（橙）・商業（赤）・工業（紫）・森林（緑）の面積。',
   params: [
     { key: 'comCluster', label: '商業の集積度', type: 'number', min: 0, max: 3, step: 0.05, default: 1.4 },
     { key: 'repel', label: '工業と住宅の斥力', type: 'number', min: 0, max: 3, step: 0.05, default: 1.2 },
@@ -22,8 +22,9 @@ export default defineWorldDemo({
     { key: 'speed', label: '速さ（年/秒）', type: 'number', min: 0.5, max: 12, step: 0.5, default: 4 },
   ],
   liveKeys: ['speed'],
-  distance: 15,
-  elevation: 0.8,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期の土地利用', '変化後'],
   build(p, env) {
     const N = env.quality === 'low' ? 48 : 64;
@@ -121,12 +122,16 @@ export default defineWorldDemo({
     const pairs = new Int32Array(N * N * 3);
     const nz = Number(p.noise);
     const hist = new Float32Array(28);
+    const NB = 8192;
+    const bucket = new Int32Array(NB + 1);
+    const sorted = new Int32Array(N * N * 3);
+    const keyOf = (v: number) => Math.min(NB - 1, Math.max(0, Math.floor(v * 600)));
     let year = 0;
     let changed = 0;
     const step = () => {
-      demand[RES] += 14;
-      demand[COM] += 3;
-      demand[IND] += 4;
+      demand[RES] += 9;
+      demand[COM] += 2;
+      demand[IND] += 2.5;
       let np = 0;
       for (let j = 0; j < N; j++) {
         for (let i = 0; i < N; i++) {
@@ -148,14 +153,21 @@ export default defineWorldDemo({
               const wt = w[t];
               sum += (wt[1] * hist[t * 4 + 1]) / 4 + (wt[2] * hist[t * 4 + 2]) / 8 + (wt[3] * hist[t * 4 + 3]) / 12;
             }
-            const v = 1 + nz * Math.pow(-Math.log(Math.max(1e-6, rng())), 2) * 0.5;
-            pot[k * 3 + a] = (1 + sum) * access(k, ACC[kk]) * v;
+            const v = 1 + nz * Math.pow(-Math.log(Math.max(1e-6, rng())), 0.7) * 0.5;
+            pot[k * 3 + a] = Math.max(0, 0.1 + sum) * access(k, ACC[kk]) * v;
             pairs[np++] = k * 3 + a;
           }
         }
       }
-      const arr = pairs.subarray(0, np);
-      arr.sort((x, y) => pot[y] - pot[x]);
+      // ポテンシャルを量子化した計数ソート（降順）。比較ソートより速く、同点はセル番号順で決定的
+      bucket.fill(0);
+      for (let n = 0; n < np; n++) bucket[keyOf(pot[pairs[n]])]++;
+      for (let b = NB - 2; b >= 0; b--) bucket[b] += bucket[b + 1];
+      for (let n = np - 1; n >= 0; n--) {
+        const id = pairs[n];
+        sorted[--bucket[keyOf(pot[id])]] = id;
+      }
+      const arr = sorted;
       const ng = new Uint8Array(N * N).fill(255);
       const cnt = [0, 0, 0, 0, 0];
       for (let n = 0; n < np; n++) {

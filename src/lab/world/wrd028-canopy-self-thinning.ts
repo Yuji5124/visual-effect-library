@@ -21,9 +21,9 @@ export default defineWorldDemo({
     { key: 'rings', label: '樹冠の円を表示', type: 'bool', default: true },
   ],
   liveKeys: ['speed', 'rings'],
-  distance: 15,
-  elevation: 0.8,
-  target: [1.8, 0.8, 0],
+  distance: 17,
+  elevation: 0.7,
+  target: [2.4, 1, 0],
   compareLabels: ['初期の苗木（一様ランダム）', '自己間引き'],
   build(p, env) {
     const rng = env.rng;
@@ -59,8 +59,7 @@ export default defineWorldDemo({
     helpers.add(rings.lines);
     // 両対数グラフ（地面の右に立てる）
     const chart = new LineChart3D(4.2, 3.2, [0xffd060, 0xffffff], HIST);
-    chart.group.position.set(S / 2 + 0.9, 0.2, -1.6);
-    chart.group.rotation.y = -0.35;
+    chart.group.position.set(S / 2 + 0.8, 0.2, -1.2);
     helpers.add(chart.group);
 
     const gw = Math.ceil(S / (2 * RMAX));

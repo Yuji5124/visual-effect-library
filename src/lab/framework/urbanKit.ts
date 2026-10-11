@@ -206,42 +206,64 @@ export interface Lot {
 }
 
 /**
- * 街区を敷地に分ける：各辺から奥行き depth の帯をとり（凸多角形の直線骨格＝最も近い辺で領域を分ける）、
- * 帯を間口 frontage で刻む。すべての敷地は block の辺（道路）に接する。残りは中庭。
+ * 街区を敷地に分ける：各道路辺から奥行き depth の帯をとり、帯を間口 frontage で刻む。すべての敷地は道路に接し、残りは中庭。
+ * 帯どうしの境界：奥行きが有限なら長い辺を優先して角地を長い辺の帯に含め（角地は2辺で接道）、
+ * 奥行きが無限（中庭なし）なら凸多角形の直線骨格（どの辺に一番近いか）で分ける。
  */
 export function lotsOfBlock(block: APoly, frontage: number, depth: number): { lots: Lot[]; court: APoly | null } {
   const lots: Lot[] = [];
-  const n = block.pts.length;
   const lines = block.pts.map((_, i) => edgeLine(block, i));
-  for (let i = 0; i < n; i++) {
-    if (block.attr[i] < 0) continue;
+  const finite = Number.isFinite(depth);
+  const order = block.pts.map((_, i) => i).filter((i) => block.attr[i] >= 0).sort((a, b) => lines[b].len - lines[a].len || a - b);
+  order.forEach((i, rank) => {
     const Li = lines[i];
-    // 帯：辺 i からの距離が depth 以下
-    let piece: APoly = { pts: block.pts.map((q) => [q[0], q[1]] as V2), attr: block.attr.map((v, k) => (k === i ? v : SIDE)) };
-    if (Number.isFinite(depth)) piece = clipHalf(piece, -Li.nx, -Li.nz, -(Li.c + depth), REAR);
-    // 直線骨格：他のどの道路辺よりも辺 i に近い部分だけ
-    for (let j = 0; j < n && piece.pts.length >= 3; j++) {
-      if (j === i || block.attr[j] < 0) continue;
-      const Lj = lines[j];
-      // dist_j(p) - dist_i(p) >= 0
-      piece = clipHalf(piece, Lj.nx - Li.nx, Lj.nz - Li.nz, Lj.c - Li.c, SIDE);
+    let piece: APoly = { pts: block.pts.map((q) => [q[0], q[1]] as V2), attr: block.attr.map((v, k) => (k === i || finite ? v : SIDE)) };
+    if (finite) {
+      // 帯：辺 i からの距離が depth 以下、かつ優先度の高い辺の帯には入らない
+      piece = clipHalf(piece, -Li.nx, -Li.nz, -(Li.c + depth), REAR);
+      for (let r = 0; r < rank && piece.pts.length >= 3; r++) {
+        const Lj = lines[order[r]];
+        piece = clipHalf(piece, Lj.nx, Lj.nz, Lj.c + depth, SIDE);
+      }
+    } else {
+      // 直線骨格：dist_j(p) - dist_i(p) >= 0
+      for (const j of order) {
+        if (j === i || piece.pts.length < 3) continue;
+        const Lj = lines[j];
+        piece = clipHalf(piece, Lj.nx - Li.nx, Lj.nz - Li.nz, Lj.c - Li.c, SIDE);
+      }
     }
-    if (piece.pts.length < 3) continue;
-    const a = block.pts[i];
-    const k = Math.max(1, Math.round(Li.len / frontage));
+    if (piece.pts.length < 3) return;
+    // 敷地の接道区間 [f0, f1]（辺 i 上の範囲）を間口で等分する
+    let f0 = Infinity, f1 = -Infinity;
+    const m = piece.pts.length;
+    for (let k = 0; k < m; k++) {
+      const a = piece.pts[k], b = piece.pts[(k + 1) % m];
+      if (Math.abs(Li.nx * a[0] + Li.nz * a[1] - Li.c) > 1e-6 || Math.abs(Li.nx * b[0] + Li.nz * b[1] - Li.c) > 1e-6) continue;
+      for (const q of [a, b]) {
+        const t = Li.dx * q[0] + Li.dz * q[1];
+        f0 = Math.min(f0, t);
+        f1 = Math.max(f1, t);
+      }
+    }
+    if (!(f1 - f0 > 1e-4)) return;
+    const k = Math.max(1, Math.round((f1 - f0) / frontage));
     for (let s = 0; s < k; s++) {
-      const t0 = (Li.len * s) / k, t1 = (Li.len * (s + 1)) / k;
       let lot = piece;
-      const c0 = Li.dx * a[0] + Li.dz * a[1];
-      if (s > 0) lot = clipHalf(lot, Li.dx, Li.dz, c0 + t0, SIDE);
-      if (s < k - 1) lot = clipHalf(lot, -Li.dx, -Li.dz, -(c0 + t1), SIDE);
+      if (s > 0) lot = clipHalf(lot, Li.dx, Li.dz, f0 + ((f1 - f0) * s) / k, SIDE);
+      if (s < k - 1) lot = clipHalf(lot, -Li.dx, -Li.dz, -(f0 + ((f1 - f0) * (s + 1)) / k), SIDE);
       if (lot.pts.length < 3 || polyArea(lot.pts) < 1e-4) continue;
-      const f = lot.attr.findIndex((v) => v >= 0);
+      // 接道辺：辺 i の直線上にある辺
+      let f = -1;
+      for (let q = 0; q < lot.pts.length && f < 0; q++) {
+        const a = lot.pts[q], b = lot.pts[(q + 1) % lot.pts.length];
+        if (lot.attr[q] >= 0 && Math.abs(Li.nx * a[0] + Li.nz * a[1] - Li.c) < 1e-6 && Math.abs(Li.nx * b[0] + Li.nz * b[1] - Li.c) < 1e-6) f = q;
+      }
       lots.push({ poly: lot, front: f, road: block.attr[i] });
     }
-  }
+  });
   let court: APoly | null = null;
-  if (Number.isFinite(depth)) {
+  if (finite) {
     const c = insetBy(block, (v) => (v >= 0 ? depth : 0));
     if (c.pts.length >= 3) court = c;
   }

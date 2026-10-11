@@ -1,5 +1,6 @@
 import { defineMotionDemo } from '../framework/motionLab';
 import { Trail } from '../framework/draw2d';
+import { PointerTracker } from '../framework/steerKit';
 
 interface Body { x: number; y: number; vx: number; vy: number }
 const G = 30, FLOOR = 0, SPEED = 5;
@@ -40,6 +41,7 @@ export default defineMotionDemo({
     ];
     const tickTimes: number[] = [], frameTimes: number[] = [];
     let kick = false;
+    const pt = new PointerTracker();
     const show = (lane: Lane, x: number, y: number, fdt: number) => {
       lane.vel.push(Math.hypot(x - lane.dx, y - lane.dy) / fdt);
       if (lane.vel.length > 60) lane.vel.shift();
@@ -122,7 +124,7 @@ export default defineMotionDemo({
         for (const t of frameTimes) { const x = x0 + (1 - (realT - t) / 1.5) * tw; g.line(x, y0, x, y0 + 0.6, 0xffffff, 0.8); }
       },
       pointer(_x, _y, down) {
-        if (down) kick = true;
+        if (pt.update(down) === 'press') kick = true;
       },
       status(p) {
         const r = lanes.map((l) => roughness(l.vel));

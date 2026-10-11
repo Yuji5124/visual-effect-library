@@ -10,9 +10,9 @@ export default defineWorldDemo({
   id: 'WRD-014',
   notes: '再帰分割で道路と街区を作り、街区を接道する敷地に割る。各敷地を道路側は前面後退、それ以外は隣地後退だけ縮めた範囲を建築面積とし、階数＝min(容積率×敷地面積÷建築面積, 最高高さ, 道路斜線＝前面道路の幅＋前面後退に比例する高さ) で決めて押し出す（幹線沿いは容積率1.6倍の商業地扱い）。道路（灰・黄）・敷地の境界（緑の線）・建物の3層を同時に表示し、比較の左は建物を建てる前の敷地割り。',
   params: [
-    { key: 'front', label: '前面後退', type: 'number', min: 0, max: 0.25, step: 0.005, default: 0.06 },
-    { key: 'side', label: '隣地後退', type: 'number', min: 0, max: 0.15, step: 0.005, default: 0.03 },
-    { key: 'far', label: '容積率（%）', type: 'number', min: 50, max: 1000, step: 10, default: 500 },
+    { key: 'front', label: '前面後退', type: 'number', min: 0, max: 0.25, step: 0.005, default: 0.1 },
+    { key: 'side', label: '隣地後退', type: 'number', min: 0, max: 0.15, step: 0.005, default: 0.05 },
+    { key: 'far', label: '容積率（%）', type: 'number', min: 50, max: 1000, step: 10, default: 400 },
     { key: 'maxH', label: '最高高さ', type: 'number', min: 0.2, max: 3, step: 0.05, default: 1.8 },
     { key: 'slope', label: '道路斜線（道路幅で高さを制限）', type: 'bool', default: true },
     { key: 'frontage', label: '間口', type: 'number', min: 0.3, max: 1.2, step: 0.01, default: 0.55 },

@@ -12,12 +12,13 @@ export default defineWorldDemo({
     { key: 'dests', label: '目的地の数', type: 'number', min: 3, max: 8, step: 1, default: 5 },
     { key: 'walkers', label: '歩行者数', type: 'number', min: 10, max: 200, step: 5, default: 60 },
     { key: 'recovery', label: '道の回復速度（×10⁻³/ステップ）', type: 'number', min: 0.5, max: 20, step: 0.5, default: 3 },
-    { key: 'attract', label: '道への誘引の強さ', type: 'number', min: 0, max: 40, step: 1, default: 14 },
+    { key: 'attract', label: '道への誘引の強さ', type: 'number', min: 0, max: 40, step: 1, default: 8 },
     { key: 'speed', label: '速さ', type: 'number', min: 0.25, max: 4, step: 0.25, default: 1.5 },
   ],
   liveKeys: ['speed'],
-  distance: 14,
-  elevation: 0.85,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['目的地と直線の経路', '形成された踏み分け道'],
   build(p, env) {
     const M = env.quality === 'low' ? 64 : 80;

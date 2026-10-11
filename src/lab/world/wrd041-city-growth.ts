@@ -16,8 +16,9 @@ export default defineWorldDemo({
     { key: 'speed', label: '時間の速さ（年/秒）', type: 'number', min: 1, max: 30, step: 1, default: 8 },
   ],
   liveKeys: ['speed'],
-  distance: 15,
-  elevation: 0.75,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期状態（道路と小さな核）', '成長後'],
   build(p, env) {
     const N = env.quality === 'low' ? 40 : 48;
@@ -81,7 +82,7 @@ export default defineWorldDemo({
     }
     const floors = new Uint8Array(N * N);
     const PER_FLOOR = 20;
-    const capacity = 60000;
+    const capacity = 80000;
     let pop = 1500;
     let total = 0;
     let year = 0;
@@ -101,7 +102,7 @@ export default defineWorldDemo({
           const x = i + di, z = j + dj;
           if ((di || dj) && x >= 0 && z >= 0 && x < N && z < N && floors[z * N + x] > 0) nb++;
         }
-        score[k] = base[k] + 0.6 * (nb / 8) - 0.07 * floors[k] - (dRoad[k] > 2 ? 0.5 : 0);
+        score[k] = base[k] + 0.6 * (nb / 8) - 0.11 * floors[k] - (dRoad[k] > 2 ? 0.5 : 0);
       }
       order.sort((a, b) => score[b] - score[a]);
       for (let n = 0; n < order.length && lastAdded < need; n++) {

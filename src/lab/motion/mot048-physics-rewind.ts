@@ -1,5 +1,6 @@
 import { defineMotionDemo } from '../framework/motionLab';
 import { hsl } from '../framework/crowdKit';
+import { PointerTracker } from '../framework/steerKit';
 
 const H = 1 / 60;
 
@@ -21,8 +22,10 @@ export default defineMotionDemo({
     const ring = new Float64Array(cap * S);
     const st = new Float64Array(S);
     const rad = new Float64Array(n);
-    const { w: W0, h: H0 } = env.bounds();
-    const BW = W0 - 0.6, BH = H0 - 2.2, BY = 1.2;
+    // 箱の大きさは画面に依らず固定（決定性のため）。表示側で縮める
+    const BW = 12, BH = 7.6, BY = 1.2;
+    let k = 1;
+    const X = (x: number) => x * k, Y = (y: number) => BY + (y - BY) * k;
     for (let i = 0; i < n; i++) {
       rad[i] = 0.3 + env.rng() * 0.35;
       st[i * 4] = (env.rng() * 2 - 1) * (BW - 1);
@@ -65,6 +68,7 @@ export default defineMotionDemo({
       }
     };
     let mode: 'play' | 'rewind' = 'play';
+    const pt = new PointerTracker();
     let acc = 0, rwAcc = 0, autoT = 0, autoCycle = 0;
     let compareUntil = -1, maxDiff = 0, branched = false, compared = 0;
     // 元の未来（巻き戻した時点より先の保存軌跡）
@@ -145,13 +149,14 @@ export default defineMotionDemo({
       },
       draw(g, p) {
         const { w, h } = env.bounds();
-        g.rect(-BW, BY - BH, BW * 2, BH * 2, mode === 'rewind' ? 0x5ab8ff : 0x555a80);
+        k = Math.min(1, (w - 0.4) / BW, (h - 1.2 - BY) / BH);
+        g.rect(X(-BW), Y(BY - BH), BW * 2 * k, BH * 2 * k, mode === 'rewind' ? 0x5ab8ff : 0x555a80);
         // 元の未来（分岐前の保存軌跡）
         if (ghostLen > 1 && cur <= compareUntil + 120) {
           for (let i = 0; i < n; i++) {
-            for (let k = 1; k < ghostLen; k++) {
-              const a = ((k - 1) * n + i) * 2, b = (k * n + i) * 2;
-              g.line(ghost[a], ghost[a + 1], ghost[b], ghost[b + 1], branched ? 0xff8a5a : 0x8890c0, branched ? 0.35 : 0.2);
+            for (let j = 1; j < ghostLen; j++) {
+              const a = ((j - 1) * n + i) * 2, b = (j * n + i) * 2;
+              g.line(X(ghost[a]), Y(ghost[a + 1]), X(ghost[b]), Y(ghost[b + 1]), branched ? 0xff8a5a : 0x8890c0, branched ? 0.35 : 0.2);
             }
           }
         }
@@ -160,13 +165,13 @@ export default defineMotionDemo({
           const col = hsl(i / n, 0.7, 0.6);
           if (p.showTrails) {
             let px = ring[o + i * 4], py = ring[o + i * 4 + 1];
-            for (let k = 2; k <= 40 && cur - k >= oldest; k += 2) {
-              const q = slot(cur - k), qx = ring[q + i * 4], qy = ring[q + i * 4 + 1];
-              g.line(px, py, qx, qy, col, 0.7 * (1 - k / 42));
+            for (let j = 2; j <= 40 && cur - j >= oldest; j += 2) {
+              const q = slot(cur - j), qx = ring[q + i * 4], qy = ring[q + i * 4 + 1];
+              g.line(X(px), Y(py), X(qx), Y(qy), col, 0.7 * (1 - j / 42));
               px = qx; py = qy;
             }
           }
-          g.circle(ring[o + i * 4], ring[o + i * 4 + 1], rad[i], col, { fill: true, segments: 14 });
+          g.circle(X(ring[o + i * 4]), Y(ring[o + i * 4 + 1]), rad[i] * k, col, { fill: true, segments: 14 });
         }
         // 履歴のタイムライン
         const x0 = -w + 0.6, tw = 2 * w - 1.2, y0 = -h + 0.3;
@@ -178,9 +183,9 @@ export default defineMotionDemo({
         g.line(cx, y0 - 0.2, cx, y0 + 0.7, 0xffffff);
       },
       pointer(x, y, down) {
-        if (!down) return;
+        if (pt.update(down) !== 'press') return;
         if (mode === 'rewind') resume();
-        kick(x, y);
+        kick(x / k, BY + (y - BY) / k);
       },
       action(key) {
         if (key === 'rewind') { if (mode === 'rewind') resume(); else startRewind(); }

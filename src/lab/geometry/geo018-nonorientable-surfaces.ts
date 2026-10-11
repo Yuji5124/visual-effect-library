@@ -99,6 +99,7 @@ export default defineGeometryDemo({
     { key: 'kind', label: '曲面の種類', type: 'select', options: [{ value: 'mobius', label: 'メビウスの帯' }, { value: 'klein', label: 'クラインの壺' }, { value: 'boy', label: 'ボーイ曲面' }], default: 'mobius' },
     { key: 'div', label: '分割数', type: 'number', min: 16, max: 200, step: 4, default: 120 },
     { key: 'bands', label: '色帯の数', type: 'number', min: 0, max: 24, step: 1, default: 8 },
+    { key: 'translucent', label: '半透明（内側の閉路も見せる）', type: 'bool', default: true },
     { key: 'walk', label: '法線を一周させる', type: 'bool', default: true },
     { key: 'speed', label: '一周の速さ', type: 'number', min: 0.02, max: 0.5, step: 0.01, default: 0.12 },
   ],
@@ -114,8 +115,18 @@ export default defineGeometryDemo({
     const toWorld = (v: THREE.Vector3) => v.multiplyScalar(S.scale).setY(v.y + S.lift);
     const surf = new GridSurface(nu, nv, (u, v, out) => toWorld(S.f(s0 + (s1 - s0) * u, t0 + (t1 - t0) * v, out)));
     const bands = Math.round(Number(p.bands));
-    surf.colorize((u, _v, c) => c.setScalar(bands > 0 && Math.floor(u * bands) % 2 ? 0.62 : 1));
+    surf.colorize((u, _v, c) => c.setScalar(bands > 0 && Math.floor(u * bands) % 2 ? 0.42 : 1));
     const object = twoSidedMesh(surf.geo, 0xff9a3d, 0x4cc7f0, true);
+    if (p.translucent) {
+      // 半透明：裏面→表面の順に描き、内側を通る閉路と法線も見えるようにする
+      object.children.forEach((c, i) => {
+        const m = (c as THREE.Mesh).material as THREE.MeshStandardMaterial;
+        m.transparent = true;
+        m.opacity = 0.62;
+        m.depthWrite = false;
+        c.renderOrder = i === 0 ? 2 : 1;
+      });
+    }
 
     // 閉路と、それに沿って連続に運んだ法線
     const M = 480;

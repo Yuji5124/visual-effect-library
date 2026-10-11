@@ -33,8 +33,8 @@ export default defineWorldDemo({
     { key: 'rings', label: '親と 2σ の円を表示', type: 'bool', default: true },
   ],
   liveKeys: ['rings'],
-  distance: 15,
-  elevation: 0.85,
+  distance: 21,
+  elevation: 0.9,
   target: [0, 0.8, 0],
   build(p, env) {
     const rng = env.rng;

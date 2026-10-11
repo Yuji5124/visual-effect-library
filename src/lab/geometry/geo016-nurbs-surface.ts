@@ -5,9 +5,9 @@ import { GridSurface, NetLines } from '../framework/surfaceKit';
 
 /** GEO-016 NURBS曲面：u・v 方向の Cox–de Boor 基底のテンソル積で有理和をとる */
 
-const N = 7;
+const N = 11;
 const SIZE = 5;
-const C = 3; // 中央の制御点
+const C = 5; // 中央の制御点
 
 function restNet(seedWave: number): THREE.Vector3[][] {
   return Array.from({ length: N }, (_, i) => Array.from({ length: N }, (_, j) => {

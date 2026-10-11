@@ -11,7 +11,7 @@ export default defineWorldDemo({
     { key: 'stick', label: '付着確率', type: 'number', min: 0.05, max: 1, step: 0.05, default: 0.6 },
     { key: 'support', label: '支持条件', type: 'select', options: [{ value: '0', label: '片持ち禁止（真下に支え）' }, { value: '1', label: '片持ち1段まで' }, { value: '2', label: '片持ち2段まで' }, { value: '9', label: '制約なし（純粋なDLA）' }], default: '1' },
     { key: 'seeds', label: '基礎の数', type: 'number', min: 1, max: 8, step: 1, default: 4 },
-    { key: 'perFrame', label: '粒子数/フレーム', type: 'number', min: 5, max: 120, step: 5, default: 40 },
+    { key: 'perFrame', label: '粒子数/フレーム', type: 'number', min: 2, max: 80, step: 2, default: 10 },
     { key: 'maxBlocks', label: 'ブロック数の上限', type: 'number', min: 500, max: 6000, step: 100, default: 3000 },
   ],
   liveKeys: ['perFrame'],
@@ -61,7 +61,7 @@ export default defineWorldDemo({
       dots.begin();
       for (let i = 0; i < n && i < cap; i++) {
         const x = order[i * 3], y = order[i * 3 + 1], z = order[i * 3 + 2];
-        const [r, g, b] = i < seedCount ? [0.35, 0.35, 0.4] : colorOf((i - seedCount) / Math.max(1, cap - seedCount));
+        const [r, g, b] = i < seedCount ? [0.35, 0.35, 0.4] : colorOf((i - seedCount) / Math.max(1, n - seedCount));
         dots.pushLinear(ox(x), (y + 0.5) * cell, oz(z), cell * 0.94, cell * 0.94, cell * 0.94, r, g, b);
       }
       dots.end();

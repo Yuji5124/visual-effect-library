@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { defineWorldDemo } from '../framework/sceneLab';
 import { fbm2, makeNoise2 } from '../framework/random';
 import { Heightfield } from '../framework/worldKit';
-import { gridFrom } from '../framework/terrainKit';
+import { gridFrom, normalize } from '../framework/terrainKit';
 
 /** WRD-026 風になびく草原：インスタンス描画の葉を頂点シェーダで曲げる */
 
@@ -77,21 +77,21 @@ export default defineWorldDemo({
   id: 'WRD-026',
   notes: '草の葉（先細りの5段の帯）をジッター格子で地形の起伏に沿って並べ、InstancedMesh で一度に描く。頂点シェーダで、時間とともに風下へ流れる2オクターブのノイズ（突風の帯）を葉の根元の位置で読み、先端ほど高さの2乗で風下へ曲げる。突風の強い所は葉を明るくしているので、帯が草原を渡っていく様子が見える。比較の左は無風。書き出しは曲げる前の静止した草。',
   params: [
-    { key: 'count', label: '本数', type: 'number', min: 2000, max: 60000, step: 1000, default: 30000 },
+    { key: 'count', label: '本数', type: 'number', min: 2000, max: 60000, step: 1000, default: 24000 },
     { key: 'dir', label: '風向（°）', type: 'number', min: 0, max: 359, step: 1, default: 60 },
     { key: 'speed', label: '風速', type: 'number', min: 0, max: 3, step: 0.05, default: 1.2 },
     { key: 'gust', label: '突風のスケール', type: 'number', min: 0.1, max: 2, step: 0.05, default: 0.55 },
     { key: 'bladeHeight', label: '草の高さ', type: 'number', min: 0.1, max: 0.6, step: 0.01, default: 0.32 },
   ],
   liveKeys: ['dir', 'speed', 'gust'],
-  distance: 10,
-  elevation: 0.45,
+  distance: 12.5,
+  elevation: 0.55,
   compareLabels: ['無風', '風あり'],
   build(p, env) {
     const count = env.quality === 'low' ? Math.min(14000, Number(p.count)) : Number(p.count);
     const size = 10, n = 64, Hs = 0.9;
     const noise = makeNoise2(env.seed);
-    const h = gridFrom(n, (u, v) => fbm2(noise, u * 1.6, v * 1.6, 4) * 0.8);
+    const h = normalize(gridFrom(n, (u, v) => fbm2(noise, u * 1.6, v * 1.6, 4)), 0.02, 0.75);
     const groundOf = () => {
       const hf = new Heightfield(n, size);
       hf.setHeights(h, Hs);

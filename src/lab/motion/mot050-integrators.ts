@@ -49,12 +49,12 @@ export default defineMotionDemo({
   id: 'MOT-050',
   notes: '太陽（GM=1）を回る同じ初期条件（近点から離心率 e の速度）を、前進オイラー・半陰的オイラー・速度ベルレ・RK4 で刻み幅 h ごとに積分する。左が軌道（白は解析解の楕円）、右が全エネルギー E=v²/2−1/r の相対誤差 |E−E₀|/|E₀| の時間変化（縦軸は log10、−12〜+1）。オイラーは外へ広がり、シンプレクティックな2つは誤差が振動するだけで増えず、RK4 は小さいがゆっくり減衰する。クリックした方向・距離を新しい近点にして再スタート。',
   params: [
-    { key: 'h', label: '刻み幅 h', type: 'number', min: 0.002, max: 0.3, step: 0.001, default: 0.05 },
+    { key: 'h', label: '刻み幅 h', type: 'number', min: 0.002, max: 0.3, step: 0.001, default: 0.02 },
     {
       key: 'show', label: '表示する積分法', type: 'select', default: 'all',
       options: [{ value: 'all', label: 'すべて' }, ...DEFS.map(([m, l]) => ({ value: m, label: l }))],
     },
-    { key: 'ecc', label: '軌道の離心率', type: 'number', min: 0, max: 0.9, step: 0.01, default: 0.6 },
+    { key: 'ecc', label: '軌道の離心率', type: 'number', min: 0, max: 0.9, step: 0.01, default: 0.5 },
     { key: 'rate', label: 'シミュレーションの速さ（時間/秒）', type: 'number', min: 0.5, max: 30, step: 0.5, default: 4 },
   ],
   resetKeys: ['h', 'ecc'],
@@ -79,9 +79,10 @@ export default defineMotionDemo({
     restart();
     const view = () => {
       const { w, h: hh } = env.bounds();
-      const b = Math.sqrt(1 - e * e);
-      const S = Math.min(w * 0.5 - 1.2, (hh - 1.2) / Math.max(b, 0.45));
-      return { S, sunX: -w * 0.5 + e * S, sunY: 0, w, hh };
+      const a = rp / (1 - e), b = Math.sqrt(1 - e * e);
+      // 楕円の中心を左半分の中央に置き、太陽（焦点）は近点方向へ a·e ずらす
+      const S = Math.min(w * 0.5 - 1.2, (hh - 1.2) / Math.max(b, 0.45)) / a;
+      return { S, sunX: -w * 0.5 + Math.cos(ang) * a * e * S, sunY: Math.sin(ang) * a * e * S, w, hh };
     };
     return {
       step(dt, p) {
@@ -147,7 +148,7 @@ export default defineMotionDemo({
             const v = it.err[k];
             if (!(v >= 0)) break;
             const l = Math.max(LO, Math.min(HI, Math.log10(v + 1e-16)));
-            pts.push(gx0 + (k / Math.max(1, MAXS - 1)) * (gx1 - gx0), gy0 + ((l - LO) / (HI - LO)) * (gy1 - gy0));
+            pts.push(gx0 + (k / Math.max(200, nS - 1)) * (gx1 - gx0), gy0 + ((l - LO) / (HI - LO)) * (gy1 - gy0));
           }
           g.polyline(pts, it.color);
         }

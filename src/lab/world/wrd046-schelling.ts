@@ -15,11 +15,12 @@ export default defineWorldDemo({
     { key: 'vacancy', label: '空き家率', type: 'number', min: 0.02, max: 0.4, step: 0.01, default: 0.1 },
     { key: 'kinds', label: '種類数', type: 'number', min: 2, max: 3, step: 1, default: 2 },
     { key: 'size', label: '格子サイズ', type: 'number', min: 30, max: 80, step: 2, default: 56 },
-    { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 0.5, max: 20, step: 0.5, default: 4 },
+    { key: 'speed', label: '速さ（ステップ/秒）', type: 'number', min: 0.5, max: 20, step: 0.5, default: 1.5 },
   ],
   liveKeys: ['speed'],
-  distance: 14,
-  elevation: 0.8,
+  distance: 16,
+  elevation: 0.62,
+  target: [0, 0.9, -0.8],
   compareLabels: ['初期のランダム配置', '移動後'],
   build(p, env) {
     const N = env.quality === 'low' ? Math.min(44, Number(p.size)) : Number(p.size);
