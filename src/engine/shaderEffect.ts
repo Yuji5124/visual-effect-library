@@ -44,6 +44,12 @@ export function paramToUniformValue(def: ParamDef, value: unknown, prev?: unknow
 interface ExtraResources {
   uniforms: Record<string, THREE.IUniform>;
   update?(frame: FrameInfo, params: ParamValues): void;
+  pointer?(x: number, y: number, down: boolean): void;
+  status?(): string | null;
+  /** 入力映像（ポスト演出のみ）を受け取って内部バッファを更新する（例: 履歴バッファ） */
+  beforeRender?(input: THREE.Texture | null): void;
+  afterRender?(input: THREE.Texture | null, output: THREE.WebGLRenderTarget): void;
+  resize?(w: number, h: number): void;
   dispose(): void;
 }
 
@@ -97,8 +103,10 @@ function makeInstanceParts(def: ShaderDefBase, fragment: string, ctx: EffectCont
     material,
     quad,
     bind,
+    extra,
     resize(w: number, h: number) {
       (uniforms.uResolution.value as THREE.Vector2).set(w, h);
+      extra?.resize?.(w, h);
     },
     dispose() {
       material.dispose();
@@ -124,9 +132,13 @@ export function defineShaderPost(def: ShaderDefBase): PostEffect {
         render(input, target, params, frame) {
           parts.uniforms.tDiffuse.value = input;
           parts.bind(params, frame);
+          parts.extra?.beforeRender?.(input);
           parts.quad.render(ctx.renderer, parts.material, target);
+          parts.extra?.afterRender?.(input, target);
         },
         resize: parts.resize,
+        pointer: parts.extra?.pointer,
+        status: parts.extra?.status,
         dispose: parts.dispose,
       };
     },
@@ -148,9 +160,13 @@ export function defineShaderSource(def: ShaderDefBase): SourceEffect {
       return {
         render(target, params, frame) {
           parts.bind(params, frame);
+          parts.extra?.beforeRender?.(null);
           parts.quad.render(ctx.renderer, parts.material, target);
+          parts.extra?.afterRender?.(null, target);
         },
         resize: parts.resize,
+        pointer: parts.extra?.pointer,
+        status: parts.extra?.status,
         dispose: parts.dispose,
       };
     },

@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { parseStackConfig, sanitizeParams } from '../src/ui/configIO';
 import type { ParamDef } from '../src/engine/types';
+import { CATALOG } from '../src/data/catalog';
+import { availability } from '../src/effects/registry';
+
+const PLANNED = CATALOG.find((e) => availability(e.id) === 'planned')!.id;
 
 const valid = {
   format: 'vfx200-stack',
@@ -23,7 +27,7 @@ describe('設定JSONの読み込み', () => {
   });
 
   it('未実装・種類違いの演出を拒否', () => {
-    expect(() => parseStackConfig({ ...valid, posts: [{ id: '001', params: {} }] })).toThrow('未実装');
+    expect(() => parseStackConfig({ ...valid, posts: [{ id: PLANNED, params: {} }] })).toThrow('未実装');
     expect(() => parseStackConfig({ ...valid, posts: [{ id: '073', params: {} }] })).toThrow('ポスト演出ではありません');
     expect(() => parseStackConfig({ ...valid, source: { id: '003', params: {} } })).toThrow('ソース演出ではありません');
   });

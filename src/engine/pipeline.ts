@@ -88,8 +88,9 @@ export class EffectPipeline {
     private readonly opts: PipelineOptions,
   ) {
     this.ctx = { renderer, width: opts.width, height: opts.height, quality: opts.quality };
-    this.a = createTarget(opts.width, opts.height);
-    this.b = createTarget(opts.width, opts.height);
+    // 3Dシーンを直接描く演出のために深度バッファも持たせる
+    this.a = createTarget(opts.width, opts.height, { depth: true });
+    this.b = createTarget(opts.width, opts.height, { depth: true });
     this.trap = shaderTrap(renderer);
   }
 

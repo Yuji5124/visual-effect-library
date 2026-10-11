@@ -115,9 +115,26 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 
+/** 単体シェーダーとして切り出せない（補助バッファが必要な）演出か */
+function needsHelperBuffers(mod: EffectModule): string | null {
+  const f = mod.shader?.fragment ?? '';
+  if (f.includes('tHistory')) return '過去フレームの履歴バッファ（engine/history.ts）';
+  if (f.includes('tPrev')) return '前フレームの出力バッファ（engine/feedback.ts）';
+  if (f.includes('tAudio')) return '音声解析テクスチャ（engine/audio.ts）';
+  return null;
+}
+
+function extraUniformLines(mod: EffectModule): string[] {
+  const f = mod.shader?.fragment ?? '';
+  const out: string[] = [];
+  if (f.includes('tGlyphs')) out.push('    tGlyphs: { value: glyphTexture }, // 文字アトラス（元ファイルの生成関数を参照）');
+  if (f.includes('uCenter')) out.push('    uCenter: { value: new THREE.Vector2(0.5, 0.5) }, // 効果の中心（0〜1）');
+  return out;
+}
+
 /** EffectComposer の ShaderPass にそのまま渡せる定義（1パスのGLSLポスト演出のみ） */
 function shaderPassSnippet(mod: EffectModule, params: ParamValues): string | null {
-  if (mod.kind !== 'post' || !mod.shader) return null;
+  if (mod.kind !== 'post' || !mod.shader || needsHelperBuffers(mod)) return null;
   const name = `${varName(mod.id, mod).replace(/^./, (c) => c.toUpperCase())}Shader`;
   const uniforms = [
     '    tDiffuse: { value: null },',
@@ -128,9 +145,7 @@ function shaderPassSnippet(mod: EffectModule, params: ParamValues): string | nul
       (p) => `    ${uniformName(p.key)}: { value: ${uniformLiteral(paramToUniformValue(p, params[p.key]))} }, // ${p.label}`,
     ),
   ];
-  if (mod.shader.fragment.includes('tGlyphs')) {
-    uniforms.push('    tGlyphs: { value: glyphTexture }, // 文字アトラス（元ファイルの生成関数を参照）');
-  }
+  uniforms.push(...extraUniformLines(mod));
   return [
     "import * as THREE from 'three';",
     "import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';",
@@ -160,7 +175,7 @@ function shaderPassSnippet(mod: EffectModule, params: ParamValues): string | nul
 
 /** フルスクリーン生成シェーダーを ShaderMaterial として任意のメッシュに貼るコード */
 function shaderMaterialSnippet(mod: EffectModule, params: ParamValues): string | null {
-  if (mod.kind !== 'source' || !mod.shader) return null;
+  if (mod.kind !== 'source' || !mod.shader || needsHelperBuffers(mod)) return null;
   const uniforms = [
     '    uTime: { value: 0 },',
     '    uQuality: { value: 1 },',
@@ -169,9 +184,7 @@ function shaderMaterialSnippet(mod: EffectModule, params: ParamValues): string |
       (p) => `    ${uniformName(p.key)}: { value: ${uniformLiteral(paramToUniformValue(p, params[p.key]))} }, // ${p.label}`,
     ),
   ];
-  if (mod.shader.fragment.includes('tGlyphs')) {
-    uniforms.push('    tGlyphs: { value: glyphTexture }, // 文字アトラス（元ファイルの生成関数を参照）');
-  }
+  uniforms.push(...extraUniformLines(mod));
   return [
     "import * as THREE from 'three';",
     '',
@@ -215,6 +228,15 @@ export function buildCodeSections(config: StackConfig, modules: Map<string, Effe
         description: '既に three/examples の EffectComposer を使っているプロジェクト向け。依存ファイルなしの単体シェーダーです。',
         language: 'ts',
         code: pass,
+      });
+    }
+    const helper = needsHelperBuffers(mod);
+    if (helper) {
+      sections.push({
+        title: `${id} ${name} — 単体シェーダーについて`,
+        description: `この演出は${helper}を使うため、単体のシェーダーだけでは動きません。上の「パイプラインAPI」の方法で移植してください（必要な補助バッファも一緒に生成・解放されます）。`,
+        language: 'text',
+        code: `必要なファイル: src/engine/（${helper.replace(/.*（|）/g, '')} を含む）と src/effects/${getRegistryEntry(id)?.file ?? ''}.ts`,
       });
     }
     const matSnippet = shaderMaterialSnippet(mod, params);
