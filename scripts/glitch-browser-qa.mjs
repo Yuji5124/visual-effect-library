@@ -75,9 +75,45 @@ try {
       row.memoryAfter={...renderer.info.memory};row.memoryBefore=before;
       row.glError=renderer.getContext().getError();metrics.push(row);
     }
-    // Every existing category-one module and protected extension creates, renders and disposes.
+    const temporal=[];
+    for(const id of ['013','014','015','016']) {
+      const mod=await loadEffect(id), params=defaultParams(mod.params);
+      const instance=mod.create({renderer,width:128,height:80,quality:'low'});
+      const beforeFrame={...renderer.info.memory};
+      const render=(f,overrides={})=>{
+        const values={...params,...overrides}, frame={time:f/30,dt:1/30,frame:f};
+        if(mod.kind==='post')instance.render(input,output,values,frame);else instance.render(output,values,frame);
+      };
+      paint();const row={id};
+      if(id==='013') {
+        for(let f=0;f<60;f++){paint(f);render(f);}
+        row.timeSliceDifference=diff(read(),data);
+        render(60,{depth:0});row.zeroDifference=diff(read(),data);
+      } else if(id==='014') {
+        render(0,{frozen:true,orbit:0});const frozen=read();
+        for(let f=1;f<30;f++)render(f,{frozen:true,orbit:0});
+        row.frozenDifference=diff(frozen,read());
+        for(let f=30;f<60;f++)render(f,{frozen:false,orbit:0});
+        row.resumedDifference=diff(frozen,read());
+        const pose=read();for(let f=60;f<90;f++)render(f,{frozen:true,orbit:1});
+        row.cameraDifference=diff(pose,read());
+      } else if(id==='015') {
+        for(let f=0;f<24;f++){data.fill(0);for(let k=0;k<data.length;k+=4){data[k]=30+f*6;data[k+3]=255;}input.needsUpdate=true;render(f,{smooth:false});}
+        row.reverseSamples=[];
+        for(let f=24;f<43;f++){render(f,{smooth:false});row.reverseSamples.push(read()[0]);}
+        const prior=read();for(let f=43;f<48;f++)render(f,{speed:0});row.stoppedDifference=diff(prior,read());
+        instance.resize(128,80);paint();render(0);row.resizeInputDifference=diff(read(),data);
+      } else {
+        render(0);const first=read();for(let f=1;f<30;f++)render(f);row.evolution=diff(first,read());
+        render(30,{speed:0});const prior=read();for(let f=31;f<40;f++)render(f,{speed:0});row.stoppedDifference=diff(prior,read());
+      }
+      instance.resize?.(128,80);render(100);
+      instance.dispose();row.glError=renderer.getContext().getError();row.memoryBefore=beforeFrame;row.memoryAfter={...renderer.info.memory};
+      temporal.push(row);
+    }
+    // Existing categories one/two and protected extensions create, render and dispose.
     const compatibility=[];
-    for(const reg of REGISTRY.filter(r=>Number(r.id)<=10 || Number(r.id)>200)) {
+    for(const reg of REGISTRY.filter(r=>Number(r.id)<=20 || Number(r.id)>200)) {
       const mod=await loadEffect(reg.id), before={...renderer.info.memory};
       const inst=mod.create({renderer,width:128,height:80,quality:'low'});
       const params=defaultParams(mod.params);
@@ -92,11 +128,11 @@ try {
         leakedGeometries:renderer.info.memory.geometries-before.geometries});
     }
     input.dispose();output.dispose();renderer.dispose();renderer.forceContextLoss();
-    return {metrics,compatibility,shaderErrors};
+    return {metrics,temporal,compatibility,shaderErrors};
   });
   await writeFile(`${out}/gpu-results.json`,JSON.stringify(gpu,null,2));
   console.log('GPU checks completed', JSON.stringify(gpu.metrics));
-  for (const id of ['001','002','010','201','216']) {
+  for (const id of ['001','002','010','013','014','015','016','201','216']) {
     await page.goto(`${base}/#/fx/${id}`);
     await page.waitForSelector('.viewer-canvas');
     await page.waitForTimeout(1100);
@@ -115,5 +151,12 @@ try {
     if(row.glError)throw new Error(`GL error ${row.id}`);
     if(row.id==='001' && (row.staticEvolution>.2||row.resizeResetDifference>.2||row.iframeResetDifference>.2||row.rewindResetDifference>.2||row.movingInputDifference<1))throw new Error('001 motion/reset regression');
     if(row.id!=='001' && (row.zeroDifference>.2||row.stoppedDifference>.2||row.activeDifference<1))throw new Error(`${row.id} control regression`);
+  }
+  for(const row of gpu.temporal) {
+    if(row.glError)throw new Error(`GL error ${row.id}`);
+    if(row.id==='013'&&(row.zeroDifference>.2||row.timeSliceDifference<1))throw new Error('013 time slice regression');
+    if(row.id==='014'&&(row.frozenDifference>.2||row.resumedDifference<1||row.cameraDifference<1))throw new Error('014 freeze regression');
+    if(row.id==='015'&&(row.stoppedDifference>.2||row.resizeInputDifference>.2||!row.reverseSamples.every((v,i,a)=>!i||v<a[i-1])))throw new Error('015 reverse order regression');
+    if(row.id==='016'&&(row.stoppedDifference>.2||row.evolution<1))throw new Error('016 tunnel regression');
   }
 } finally { await browser.close(); }

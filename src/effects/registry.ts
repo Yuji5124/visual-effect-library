@@ -36,7 +36,10 @@ export const REGISTRY: readonly RegistryEntry[] = [
   // 2. 時間・残像
   { id: '011', kind: 'post', status: 'implemented', file: 'post/e011-stutter' },
   { id: '012', kind: 'post', status: 'implemented', file: 'post/e012-frame-echo' },
-  { id: '016', kind: 'source', status: 'experimental', file: 'source/e016-loop-tunnel' },
+  { id: '013', kind: 'post', status: 'implemented', file: 'post/e013-motion-time-slice' },
+  { id: '014', kind: 'source', status: 'implemented', file: 'source/e014-time-freeze' },
+  { id: '015', kind: 'post', status: 'implemented', file: 'post/e015-reverse-motion' },
+  { id: '016', kind: 'source', status: 'implemented', file: 'source/e016-loop-tunnel' },
   { id: '017', kind: 'post', status: 'implemented', file: 'post/e017-feedback' },
   { id: '018', kind: 'post', status: 'implemented', file: 'post/e018-slit-scan' },
   { id: '019', kind: 'post', status: 'implemented', file: 'post/e019-time-delay' },
