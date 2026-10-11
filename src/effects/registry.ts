@@ -23,7 +23,8 @@ const loaders = import.meta.glob<{ default: EffectModule }>(['./post/*.ts', './s
 
 export const REGISTRY: readonly RegistryEntry[] = [
   // 1. グリッチ・データ破壊
-  { id: '001', kind: 'post', status: 'experimental', file: 'post/e001-datamosh' },
+  { id: '001', kind: 'post', status: 'implemented', file: 'post/e001-datamosh' },
+  { id: '002', kind: 'post', status: 'implemented', file: 'post/e002-databending' },
   { id: '003', kind: 'post', status: 'implemented', file: 'post/e003-rgb-split' },
   { id: '004', kind: 'post', status: 'implemented', file: 'post/e004-block-noise' },
   { id: '005', kind: 'post', status: 'implemented', file: 'post/e005-slice-glitch' },
@@ -31,6 +32,7 @@ export const REGISTRY: readonly RegistryEntry[] = [
   { id: '007', kind: 'post', status: 'implemented', file: 'post/e007-freeze-glitch' },
   { id: '008', kind: 'post', status: 'implemented', file: 'post/e008-bit-crush' },
   { id: '009', kind: 'post', status: 'implemented', file: 'post/e009-signal-loss' },
+  { id: '010', kind: 'post', status: 'implemented', file: 'post/e010-error-propagation' },
   // 2. 時間・残像
   { id: '011', kind: 'post', status: 'implemented', file: 'post/e011-stutter' },
   { id: '012', kind: 'post', status: 'implemented', file: 'post/e012-frame-echo' },
