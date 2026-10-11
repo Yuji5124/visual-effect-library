@@ -1,6 +1,11 @@
 // src/effects/post・source のファイルから src/effects/registry.ts の REGISTRY 一覧を再生成する。
 // 使い方: npm run registry
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
+
+// 内容が変わらない時は書き込まない（開発サーバーの不要な再読み込みを避ける）
+function writeIfChanged(file, text) {
+  if (readFileSync(file, 'utf8') !== text) writeFileSync(file, text);
+}
 import { join } from 'node:path';
 
 const CATS = ['グリッチ・データ破壊', '時間・残像', 'ピクセル・レトロ', '色彩・光', '空間歪曲', '粒子・流体', 'カメラ・レンズ', '幾何学・生成アート', 'アナログ・物質感', '世界変容・実験表現', '錯視・知覚操作', 'AI・機械視覚', '物理・破壊', '生命・群衆・成長', '文字・情報視覚化', '音響反応・同期', '空間投影・AR', 'トランジション・変身', '映画的・特殊撮影', 'シュール・異常世界', '拡張：レンダリング技法', '拡張：自然・空間・遷移'];
@@ -40,7 +45,7 @@ const s = readFileSync(path, 'utf8');
 const head = 'export const REGISTRY: readonly RegistryEntry[] = [';
 const a = s.indexOf(head) + head.length;
 const b = s.indexOf('];', a);
-writeFileSync(path, s.slice(0, a) + '\n' + lines.join('\n') + '\n' + s.slice(b));
+writeIfChanged(path, s.slice(0, a) + '\n' + lines.join('\n') + '\n' + s.slice(b));
 console.log(`${entries.length} 件を登録（実験中 ${entries.filter((e) => e.status === 'experimental').length} 件）`);
 
 // ---- GEOMETRY / MOTION / WORLD GENERATION（src/lab）----
@@ -68,5 +73,5 @@ const lhead = 'export const LAB_REGISTRY: readonly LabRegistryEntry[] = [';
 const la = ls.indexOf(lhead) + lhead.length;
 const lb = ls.indexOf('];', la);
 const labLines = labEntries.map((e) => `  { id: '${e.id}', kind: 'source', status: '${e.status}', file: '${e.file}' },`);
-writeFileSync(labPath, ls.slice(0, la) + '\n' + labLines.join('\n') + (labLines.length ? '\n' : '') + ls.slice(lb));
+writeIfChanged(labPath, ls.slice(0, la) + '\n' + labLines.join('\n') + (labLines.length ? '\n' : '') + ls.slice(lb));
 console.log(`GEOMETRY/MOTION/WORLD: ${labEntries.length} 件を登録（実験中 ${labEntries.filter((e) => e.status === 'experimental').length} 件）`);

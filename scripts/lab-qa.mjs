@@ -89,9 +89,8 @@ for (const id of ids) {
   console.log(`${id} ${problems.length ? 'NG' : 'OK'}${problems.length ? '\n  ' + problems.join('\n  ') : ''}`);
 }
 
-// セルフテスト（対象の接頭辞が共通ならそれで絞る）
-const common = ids.length ? ids.reduce((a, b) => { let i = 0; while (i < a.length && a[i] === b[i]) i++; return a.slice(0, i); }) : '';
-await page.goto(`${base}/#/selftest?only=${encodeURIComponent(common)}`);
+// セルフテスト（対象IDだけ）
+await page.goto(`${base}/#/selftest?ids=${encodeURIComponent(ids.join(','))}`);
 await page.waitForFunction(() => window.__selftest, null, { timeout: 300000 });
 const st = await page.evaluate(() => window.__selftest);
 for (const r of st.results.filter((r) => ids.includes(r.id))) {

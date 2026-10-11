@@ -42,8 +42,11 @@ export async function runSelfTest(container: HTMLElement): Promise<SelfTestResul
     warm.dispose();
   }
   // #/selftest?only=GEO のように接頭辞で対象を絞れる（既定は全件）
-  const only = new URLSearchParams(location.hash.split('?')[1] ?? '').get('only');
-  const targets = ALL_REGISTRY.filter((r) => !only || r.id.startsWith(only));
+  // #/selftest?ids=GEO-001,GEO-002 で個別指定も可
+  const q = new URLSearchParams(location.hash.split('?')[1] ?? '');
+  const only = q.get('only');
+  const ids = q.get('ids')?.split(',');
+  const targets = ALL_REGISTRY.filter((r) => (!only || r.id.startsWith(only)) && (!ids || ids.includes(r.id)));
   for (const reg of targets) {
     const t0 = performance.now();
     const before = renderer.info.memory.textures + renderer.info.memory.geometries;
