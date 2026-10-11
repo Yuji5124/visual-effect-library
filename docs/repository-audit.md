@@ -19,7 +19,13 @@
 
 `tests/fixtures/extensions-protection.json` は変更前に生成したSHA-256スナップショット。201〜216の16モジュール、カタログ全体、カテゴリ全体、追加16件の登録行を記録した。`tests/extensions-protection.test.ts` は順序・件数・ファイル完全一致・登録内容を検証する。パラメータとShaderもモジュール全体のハッシュで保護する。
 
-共通エンジン、UI、カタログ、カテゴリ、追加16モジュールには今回変更を加えていない。登録表の変更は基本200件の行のみ。初期状態との実行比較は、同じブラウザ・品質・入力で行い、Three.jsが所有する初回3D描画時の共有テクスチャは既存セルフテスト同様にデモシーンで予熱してから測定する。
+共通エンジン、カタログ、カテゴリ、追加16モジュールには今回変更を加えていない。登録表の変更は基本200件の行のみ。共通UIは下記のビューア再開不具合のみ修正。GPU破棄の比較ではThree.jsが所有する初回3D描画時の共有テクスチャを、既存セルフテスト同様にデモシーンで予熱してから測定する。
+
+## 実際の開閉検証で見つかった既存不具合
+
+Viewer.close()はrenderer.forceContextLoss()でコンテキストを解放する一方、同じcanvasを次回のRendererへ渡していた。詳細を開く→一覧→別の詳細を開くと、2回目以降に`Cannot read properties of null (reading 'precision')`が発生した。該当するviewer.tsはこの検証時点で初期コミットのままなので、今回のエフェクト追加による変更ではない。
+
+解放後のcanvasを新しい要素へ置き換え、既存のポインター操作を再登録する最小修正を加えた。イベントやスタイル・ラベルは維持。変更した7演出に加えて201〜216も全件、同じViewerを開く→閉じる→再開して正常に描画することを検証した。23件すべてコンテキスト喪失なし、ブラウザエラー0。16モジュールのソース・Shader・パラメータ・データ・statusは不変。
 
 ## 開発・検証
 
@@ -33,6 +39,9 @@ npm run dev -- --host 127.0.0.1
 QA_BASE_URL=http://127.0.0.1:5173 \
 PLAYWRIGHT_MODULE_PATH=/opt/codex/cua_node/lib/node_modules/playwright-core/index.mjs \
 node scripts/glitch-browser-qa.mjs
+QA_BASE_URL=http://127.0.0.1:5173 \
+PLAYWRIGHT_MODULE_PATH=/opt/codex/cua_node/lib/node_modules/playwright-core/index.mjs \
+node scripts/effect-ui-qa.mjs
 ```
 
 ポートが使用中ならViteが表示したポートをQA_BASE_URLへ設定する。成果物は既定で`/tmp/visual-effect-library-qa/`。この環境のChromiumはSwiftShaderでWebGL2を提供するため、実GPU性能・Windows Chrome・iPad Safariの検証結果とは区別する。

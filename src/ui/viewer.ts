@@ -24,7 +24,7 @@ async function loadModule(id: string): Promise<EffectModule> {
 export class Viewer {
   readonly root: HTMLElement;
   private readonly stage: HTMLElement;
-  private readonly canvas: HTMLCanvasElement;
+  private canvas: HTMLCanvasElement;
   private readonly hud: HTMLElement;
   private readonly notice: HTMLElement;
   private readonly panel: HTMLElement;
@@ -263,6 +263,13 @@ export class Viewer {
       // コンテキストを即座にブラウザへ返す（iPadでの上限対策）
       this.renderer.forceContextLoss();
       this.renderer = null;
+      // A deliberately lost WebGL context belongs to its canvas. A new renderer
+      // on that same canvas would receive the lost context again on reopening.
+      const canvas = h('canvas', { class: 'viewer-canvas', 'aria-label': '演出プレビュー' });
+      this.canvas.replaceWith(canvas);
+      this.canvas = canvas;
+      this.pointerDown = false;
+      this.bindPointer();
     }
     this.resizeObs.disconnect();
     this.root.remove();

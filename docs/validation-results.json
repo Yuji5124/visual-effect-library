@@ -1,0 +1,541 @@
+{
+  "date": "2026-10-11",
+  "environment": "Chromium / SwiftShader WebGL2",
+  "scope": "001–020 and protected 201–216; all registered effects smoke-tested",
+  "unitTests": {
+    "passed": 159,
+    "failed": 0
+  },
+  "build": "passed (tsc --noEmit + vite build)",
+  "gpu": {
+    "metrics": [
+      {
+        "id": "001",
+        "firstInputDifference": 0,
+        "staticEvolution": 0,
+        "movingInputDifference": 11.400130208333334,
+        "resizeResetDifference": 0,
+        "iframeResetDifference": 0,
+        "rewindResetDifference": 0,
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 2
+        },
+        "glError": 0
+      },
+      {
+        "id": "002",
+        "firstInputDifference": 27.50078125,
+        "staticEvolution": 41.2927734375,
+        "zeroDifference": 0,
+        "stoppedDifference": 0,
+        "activeDifference": 27.50078125,
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "glError": 0
+      },
+      {
+        "id": "010",
+        "firstInputDifference": 0.4123046875,
+        "staticEvolution": 51.15963541666667,
+        "zeroDifference": 0,
+        "stoppedDifference": 0,
+        "activeDifference": 51.41409505208333,
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "glError": 0
+      }
+    ],
+    "temporal": [
+      {
+        "id": "013",
+        "timeSliceDifference": 20.204427083333332,
+        "zeroDifference": 0,
+        "glError": 0,
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        }
+      },
+      {
+        "id": "014",
+        "frozenDifference": 0,
+        "resumedDifference": 15.233040364583333,
+        "cameraDifference": 22.150911458333333,
+        "glError": 0,
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        }
+      },
+      {
+        "id": "015",
+        "reverseSamples": [
+          162,
+          156,
+          150,
+          144,
+          138,
+          132,
+          126,
+          120,
+          114,
+          108,
+          102,
+          96,
+          90,
+          84,
+          78,
+          72,
+          66,
+          60,
+          54
+        ],
+        "stoppedDifference": 0,
+        "resizeInputDifference": 0,
+        "glError": 0,
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        }
+      },
+      {
+        "id": "016",
+        "evolution": 25.981901041666667,
+        "stoppedDifference": 0,
+        "glError": 0,
+        "memoryBefore": {
+          "geometries": 0,
+          "textures": 3
+        },
+        "memoryAfter": {
+          "geometries": 0,
+          "textures": 3
+        }
+      }
+    ],
+    "compatibility": [
+      {
+        "id": "001",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "002",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "003",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "004",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "005",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "006",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "007",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "008",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "009",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "010",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "011",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "012",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "013",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "014",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "015",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "016",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "017",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "018",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "019",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "020",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "201",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "202",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "203",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "204",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "205",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "206",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "207",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "208",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "209",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "210",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "211",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "212",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "213",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "214",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "215",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      },
+      {
+        "id": "216",
+        "glError": 0,
+        "leakedTextures": 0,
+        "leakedGeometries": 0
+      }
+    ],
+    "shaderErrors": []
+  },
+  "selftest": {
+    "count": 138,
+    "failed": [],
+    "memory": {
+      "geometries": 0,
+      "textures": 1
+    },
+    "sharedTextureNote": "One renderer-owned shared texture remains after warmed-up 3D rendering; all effect texture/geometry increments are zero."
+  },
+  "ui": {
+    "results": [
+      {
+        "id": "001",
+        "title": "001データモッシュ実装済みグリッチ・データ破壊",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "002",
+        "title": "002データベンディング実装済みグリッチ・データ破壊",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "010",
+        "title": "010エラー増殖実装済みグリッチ・データ破壊",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "013",
+        "title": "013モーションタイムスライス実装済み時間・残像",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "014",
+        "title": "014タイムフリーズ実装済み時間・残像",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "015",
+        "title": "015リバースモーション実装済み時間・残像",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "016",
+        "title": "016ループトンネル実装済み時間・残像",
+        "sliderChanged": true,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "201",
+        "title": "201アンビエントオクルージョン実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "202",
+        "title": "202選択アウトライン実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "203",
+        "title": "203衝撃波実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "204",
+        "title": "204カラーグレーディング（LUT）実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "205",
+        "title": "205アナグリフ立体視実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "206",
+        "title": "206トゥーンシェーディング実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "207",
+        "title": "207薄膜干渉実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "208",
+        "title": "208デカール実装済み拡張：レンダリング技法",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "209",
+        "title": "209海面（ゲルストナー波）実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "210",
+        "title": "210大気散乱の空実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "211",
+        "title": "211ボリュームクラウド実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "212",
+        "title": "212溶岩実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "213",
+        "title": "213N体重力シミュレーション実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "214",
+        "title": "214ページめくり実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "215",
+        "title": "215画面溶け落ち実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      },
+      {
+        "id": "216",
+        "title": "216タイル反転実装済み拡張：自然・空間・遷移",
+        "sliderChanged": false,
+        "close": true,
+        "contextLost": false
+      }
+    ],
+    "stats": "基本200種＋拡張16種 · 実装済み 138 · 実験中 0 · 未実装 78",
+    "errors": []
+  }
+}
