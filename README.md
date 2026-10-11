@@ -1,5 +1,7 @@
 # VISUAL EFFECT LIBRARY 200
 
+**▶ 公開ページ: https://yuji5124.github.io/visual-effect-library/**（PC・iPad のブラウザでそのまま動きます）
+
 Three.js / WebGL / GLSL を中心にした **200種類の映像演出の実験室**。
 カタログを眺めるだけのサムネイル集ではなく、各演出が実際に動き、パラメータを触り、重ね合わせ、
 そのまま他の Three.js ゲーム（MUTOPIA / GIANT CLIMB など）へ移植できることを目的にしています。
@@ -139,8 +141,8 @@ src/
 ## GitHub Pages で公開
 
 `vite.config.ts` は `base: './'` なので、サブパスでもそのまま動きます。
-`.github/workflows/deploy.yml` が `main` への push でテスト→ビルド→Pages へデプロイします。
-初回のみリポジトリの **Settings → Pages → Build and deployment → Source** を「GitHub Actions」に設定してください。
+`.github/workflows/deploy.yml` が `main` への push でテスト→ビルド→Pages へデプロイします（公開先: https://yuji5124.github.io/visual-effect-library/ ）。
+Pages の設定（Settings → Pages → Source: GitHub Actions）は完了済みです。プルリクエストではテストとビルドだけを実行し、デプロイはしません。
 
 ## ロードマップ
 
