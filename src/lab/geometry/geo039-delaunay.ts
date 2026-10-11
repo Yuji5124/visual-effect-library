@@ -51,7 +51,7 @@ export default defineGeometryDemo({
     { key: 'seed', label: 'シード', type: 'number', min: 1, max: 9999, step: 1, default: 1 },
   ],
   liveKeys: ['animate', 'circles'],
-  distance: 9,
+  distance: 11,
   elevation: 0.75,
   compareLabels: ['点群', 'ドロネー三角形分割'],
   build(p, env) {
@@ -90,13 +90,10 @@ export default defineGeometryDemo({
       c.setHSL(0.33 - t * 0.28, 0.45, 0.28 + t * 0.4);
       colors.set([c.r, c.g, c.b], i * 3);
     }
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    const maxIdx = (2 * n + 2) * 3;
-    const index = new THREE.BufferAttribute(n + 3 > 65535 ? new Uint32Array(maxIdx) : new Uint16Array(maxIdx), 1);
-    geo.setIndex(index);
-    const mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8, flatShading: true, side: THREE.DoubleSide }));
+    const posAttr = new THREE.BufferAttribute(positions, 3);
+    const colAttr = new THREE.BufferAttribute(colors, 3);
+    const arr = new Uint16Array((2 * n + 2) * 3);
+    const mesh = new THREE.Mesh(new THREE.BufferGeometry(), new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.8, flatShading: true, side: THREE.DoubleSide }));
 
     const dotGeo = new THREE.SphereGeometry(0.035, 6, 4);
     const mkDots = (color: number) => {
@@ -131,7 +128,6 @@ export default defineGeometryDemo({
     let triCount = 0;
     let ms = 0;
     const emit = () => {
-      const arr = index.array as Uint16Array | Uint32Array;
       let k = 0;
       let ck = 0;
       for (const t of bw.tris) {
@@ -147,12 +143,14 @@ export default defineGeometryDemo({
           ck++;
         }
       }
-      // 書き出し時に古い三角形が残らないよう末尾を 0 で潰す（縮退三角形）
-      arr.fill(0, k);
       triCount = k / 3;
-      geo.setDrawRange(0, k);
-      index.needsUpdate = true;
-      geo.computeVertexNormals();
+      // 三角形の数ちょうどの索引でジオメトリを作り直す（頂点の属性は共有）
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', posAttr);
+      geo.setAttribute('color', colAttr);
+      geo.setIndex(new THREE.BufferAttribute(arr.slice(0, k), 1));
+      mesh.geometry.dispose();
+      mesh.geometry = geo;
       cgeo.setDrawRange(0, ck * circleSeg * 2);
       cgeo.attributes.position.needsUpdate = true;
       cgeo.computeBoundingSphere();

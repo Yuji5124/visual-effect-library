@@ -14,7 +14,7 @@ export default defineGeometryDemo({
     { key: 'seed', label: 'シード', type: 'number', min: 1, max: 9999, step: 1, default: 1 },
   ],
   liveKeys: ['motion', 'incremental'],
-  distance: 8,
+  distance: 9.5,
   compareLabels: ['点群', '凸包'],
   build(p, env) {
     const rng = env.rng;
@@ -43,18 +43,14 @@ export default defineGeometryDemo({
     const maxTri = 2 * n;
     const posArr = new Float32Array(maxTri * 9);
     const nrmArr = new Float32Array(maxTri * 9);
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(posArr, 3).setUsage(THREE.DynamicDrawUsage));
-    geo.setAttribute('normal', new THREE.BufferAttribute(nrmArr, 3).setUsage(THREE.DynamicDrawUsage));
-    const hullMesh = new THREE.Mesh(geo, std(0xffb84d, { transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false, flatShading: true }));
+    const hullMesh = new THREE.Mesh(new THREE.BufferGeometry(), std(0xffb84d, { transparent: true, opacity: 0.45, side: THREE.DoubleSide, depthWrite: false, flatShading: true }));
     const edges = new THREE.LineSegments(new THREE.BufferGeometry(), new THREE.LineBasicMaterial({ color: 0xffd28a }));
     const edgeArr = new Float32Array(maxTri * 18);
-    edges.geometry.setAttribute('position', new THREE.BufferAttribute(edgeArr, 3).setUsage(THREE.DynamicDrawUsage));
 
     const dotGeo = new THREE.IcosahedronGeometry(0.045, 1);
     const dots = new THREE.InstancedMesh(dotGeo, new THREE.MeshStandardMaterial({ roughness: 0.4 }), n);
     const object = new THREE.Group();
-    object.add(hullMesh, edges, dots);
+    object.add(hullMesh, edges);
     const beforeDots = new THREE.InstancedMesh(dotGeo.clone(), new THREE.MeshStandardMaterial({ color: 0x9ab0e0 }), n);
     const m = new THREE.Matrix4();
     base.forEach((v, i) => beforeDots.setMatrixAt(i, m.makeTranslation(v.x, v.y, v.z)));
@@ -65,8 +61,7 @@ export default defineGeometryDemo({
     const onHull = new Uint8Array(n);
     const hull = new ConvexHull();
     let hullCount = 0, faceCount = 0, ms = 0, active = n;
-    let prevTri = 0, prevEc = 0;
-    let incT = 0;
+        let incT = 0;
 
     const recompute = (k: number) => {
       const t0 = performance.now();
@@ -108,28 +103,24 @@ export default defineGeometryDemo({
         let e = face.edge;
         do {
           const a = e.tail().point, b = e.head().point;
-          if (ec < maxTri * 3) {
+          // 半辺は両向きにあるので片方だけ描く
+          if (ec < maxTri * 3 && (indexOf.get(a) ?? 0) < (indexOf.get(b) ?? 0)) {
             edgeArr.set([a.x, a.y, a.z, b.x, b.y, b.z], ec * 6);
             ec++;
           }
           e = e.next;
         } while (e !== face.edge);
       }
-      // 書き出し時に古い三角形が残らないよう、使わなくなった末尾を潰す
-      if (tri < prevTri) {
-        posArr.fill(0, tri * 9, prevTri * 9);
-        nrmArr.fill(0, tri * 9, prevTri * 9);
-      }
-      prevTri = tri;
-      if (ec < prevEc) edgeArr.fill(0, ec * 6, prevEc * 6);
-      prevEc = ec;
-      geo.setDrawRange(0, tri * 3);
-      geo.attributes.position.needsUpdate = true;
-      geo.attributes.normal.needsUpdate = true;
-      geo.computeBoundingSphere();
-      edges.geometry.setDrawRange(0, ec * 2);
-      edges.geometry.attributes.position.needsUpdate = true;
-      edges.geometry.computeBoundingSphere();
+      // 毎回ちょうどの大きさのジオメトリに作り直す（書き出し・頂点数表示が正確になる。点数が少ないので軽い）
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute('position', new THREE.BufferAttribute(posArr.slice(0, tri * 9), 3));
+      geo.setAttribute('normal', new THREE.BufferAttribute(nrmArr.slice(0, tri * 9), 3));
+      hullMesh.geometry.dispose();
+      hullMesh.geometry = geo;
+      const eg = new THREE.BufferGeometry();
+      eg.setAttribute('position', new THREE.BufferAttribute(edgeArr.slice(0, ec * 6), 3));
+      edges.geometry.dispose();
+      edges.geometry = eg;
       hullCount = 0;
       for (let i = 0; i < n; i++) {
         dots.setMatrixAt(i, m.makeTranslation(pts[i].x, pts[i].y, pts[i].z));
@@ -147,6 +138,7 @@ export default defineGeometryDemo({
     return {
       object,
       before: beforeDots,
+      helpers: dots,
       info: () => `凸包の頂点 ${hullCount}/${active} 点 · 面 ${faceCount} · 計算 ${ms.toFixed(2)}ms`,
       update(dt, _t, live) {
         const speed = Number(live.motion);

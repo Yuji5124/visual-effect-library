@@ -12,7 +12,7 @@ export default defineWorldDemo({
     { key: 'size', label: 'サイズ（セル数）', type: 'number', min: 6, max: 32, step: 1, default: 18 },
     { key: 'startX', label: 'スタート位置 X', type: 'number', min: 0, max: 1, step: 0.01, default: 0 },
     { key: 'startY', label: 'スタート位置 Y', type: 'number', min: 0, max: 1, step: 0.01, default: 0 },
-    { key: 'speed', label: '探索速度（段/秒）', type: 'number', min: 1, max: 120, step: 1, default: 25 },
+    { key: 'speed', label: '探索速度（段/秒）', type: 'number', min: 1, max: 120, step: 1, default: 40 },
     { key: 'heightMode', label: '距離を高さでも表示', type: 'bool', default: true },
   ],
   liveKeys: ['speed', 'heightMode'],
@@ -24,8 +24,8 @@ export default defineWorldDemo({
     const { grid, w, h } = carveMaze(c, c, env.rng);
     const size = 10;
     const cell = size / w;
-    const WALL_H = 0.5;
-    const walls = wallMesh(grid, w, h, cell, WALL_H, 0x8a90b0);
+    const WALL_H = 0.32;
+    const walls = wallMesh(grid, w, h, cell, WALL_H, 0x6c7290);
     const floor = new ColumnField(w, h, size, { gap: 0 });
     for (let k = 0; k < w * h; k++) floor.setK(k, 0.02, grid[k] ? 0x202436 : 0x3a405a);
     floor.commit();
@@ -36,7 +36,7 @@ export default defineWorldDemo({
     const pf = new ColumnField(w, h, size, { gap: 0 });
     for (let k = 0; k < w * h; k++) pf.setK(k, 0.02, grid[k] ? 0x202436 : 0x3a405a);
     pf.commit();
-    before.add(wallMesh(grid, w, h, cell, WALL_H, 0x8a90b0), pf.mesh);
+    before.add(wallMesh(grid, w, h, cell, WALL_H, 0x6c7290), pf.mesh);
 
     const sx = Math.round(Number(p.startX) * (c - 1)), sy = Math.round(Number(p.startY) * (c - 1));
     const start = (sy * 2 + 1) * w + sx * 2 + 1;

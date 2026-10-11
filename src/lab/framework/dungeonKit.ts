@@ -117,8 +117,8 @@ export function bspLevel(W: number, H: number, targetRooms: number, rng: () => n
   }
   const rooms: Rect[] = [];
   for (const n of leaves) {
-    const rw = Math.max(3, Math.floor(n.r.w * (0.5 + rng() * 0.3)));
-    const rh = Math.max(3, Math.floor(n.r.h * (0.5 + rng() * 0.3)));
+    const rw = Math.max(3, Math.floor(n.r.w * (0.42 + rng() * 0.3)));
+    const rh = Math.max(3, Math.floor(n.r.h * (0.42 + rng() * 0.3)));
     const rx = n.r.x + 1 + Math.floor(rng() * Math.max(1, n.r.w - rw - 1));
     const ry = n.r.y + 1 + Math.floor(rng() * Math.max(1, n.r.h - rh - 1));
     n.room = rooms.length;

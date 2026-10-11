@@ -69,8 +69,10 @@ export default defineMotionDemo({
           m.acc = a;
           const s = Math.hypot(m.vx, m.vy) || 1;
           // 速度に直交（左向き）の単位ベクトルに a を掛けて加える
-          m.vx += (-m.vy / s) * a * dt;
-          m.vy += (m.vx / s) * a * dt;
+          // 速度に垂直な単位ベクトルは更新前の速度から求める
+          const nx = -m.vy / s, ny = m.vx / s;
+          m.vx += nx * a * dt;
+          m.vy += ny * a * dt;
           const s2 = Math.hypot(m.vx, m.vy) || 1;
           m.vx = (m.vx / s2) * sp;
           m.vy = (m.vy / s2) * sp;

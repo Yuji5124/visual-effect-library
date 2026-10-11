@@ -129,7 +129,7 @@ export default defineWorldDemo({
         c.copy(grass).lerp(rock, Math.min(1, Math.max(0, (s[k] - 0.35) * 2.5)));
         if (hh[k] > 0.82) c.lerp(tmp.setRGB(0.9, 0.92, 0.95), Math.min(1, (hh[k] - 0.82) * 8));
         if (base) {
-          const d = (hh[k] - base[k]) * 45;
+          const d = (hh[k] - base[k]) * 30;
           if (d > 0) c.lerp(silt, Math.min(0.9, d));
           else c.lerp(dug, Math.min(0.8, -d));
         }

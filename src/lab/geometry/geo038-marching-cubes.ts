@@ -21,11 +21,12 @@ export default defineGeometryDemo({
     let res = Number(p.res);
     if (env.quality === 'low') res = Math.min(res, 28);
     const noise = makeNoise3(env.seed);
-    const mc = new MarchingCubes(res, std(0x7fd1ff, { roughness: 0.3, side: THREE.DoubleSide }), false, false, res * res * 28);
-    mc.scale.setScalar(2);
-    const pos = mc.geometry.attributes.position.array as Float32Array;
-    const nrm = mc.geometry.attributes.normal.array as Float32Array;
-    let prevCount = 0;
+    // MarchingCubes は三角形化の計算器として使い、結果はちょうどの大きさのメッシュへ写す
+    // （MarchingCubes 自体は最大容量のバッファを描画範囲で切って使うため、書き出し・頂点数表示が不正確になる）
+    const mcMat = new THREE.MeshBasicMaterial();
+    const mc = new MarchingCubes(res, mcMat, false, false, res * res * 28);
+    const mesh = new THREE.Mesh(new THREE.BufferGeometry(), std(0x7fd1ff, { roughness: 0.3, side: THREE.DoubleSide }));
+    mesh.scale.setScalar(2);
 
     // 比較用：粗い格子の点群（しきい値以上の点だけ明るく）
     const pr = Math.min(res, 24);
@@ -63,12 +64,11 @@ export default defineGeometryDemo({
       }
       mc.isolation = iso;
       mc.update();
-      // 書き出し時に前フレームの三角形が残らないよう末尾を潰す
-      if (mc.count < prevCount) {
-        pos.fill(0, mc.count * 3, prevCount * 3);
-        nrm.fill(0, mc.count * 3, prevCount * 3);
-      }
-      prevCount = mc.count;
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(mc.positionArray.slice(0, mc.count * 3), 3));
+      g.setAttribute('normal', new THREE.BufferAttribute(mc.normalArray.slice(0, mc.count * 3), 3));
+      mesh.geometry.dispose();
+      mesh.geometry = g;
       ms = performance.now() - t0;
     };
     const fillPoints = (iso: number, sc: number) => {
@@ -85,10 +85,14 @@ export default defineGeometryDemo({
     fill(Number(p.threshold), Number(p.scale));
     fillPoints(Number(p.threshold), Number(p.scale));
     return {
-      object: mc,
+      object: mesh,
       before,
       helpers: frame,
       info: () => `格子 ${res}³ · 三角形 ${(mc.count / 3).toLocaleString()} · 場の書込み+抽出 ${ms.toFixed(1)}ms`,
+      dispose() {
+        mc.geometry.dispose();
+        mcMat.dispose();
+      },
       update(dt, _time, live) {
         const speed = Number(live.speed);
         const iso = Number(live.threshold);

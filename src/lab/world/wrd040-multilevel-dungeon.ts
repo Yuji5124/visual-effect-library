@@ -17,16 +17,16 @@ export default defineWorldDemo({
   params: [
     { key: 'levels', label: '階数', type: 'number', min: 2, max: 6, step: 1, default: 4 },
     { key: 'rooms', label: '各階の部屋数', type: 'number', min: 3, max: 14, step: 1, default: 7 },
-    { key: 'spacing', label: '階の間隔（分解表示）', type: 'number', min: 0.5, max: 3, step: 0.05, default: 1.3 },
+    { key: 'spacing', label: '階の間隔（分解表示）', type: 'number', min: 0.5, max: 3.5, step: 0.05, default: 1.9 },
     {
       key: 'show', label: '表示する階', type: 'select', default: 'all',
       options: [{ value: 'all', label: 'すべて' }, ...[1, 2, 3, 4, 5, 6].map((i) => ({ value: String(i), label: `${i} 階` }))],
     },
   ],
   liveKeys: ['spacing', 'show'],
-  distance: 15,
-  elevation: 0.55,
-  target: [0, 2, 0],
+  distance: 18,
+  elevation: 0.5,
+  target: [0, 2.5, 0],
   compareLabels: ['階ごとの生成のみ（階段なし）', '階段で接続'],
   build(p, env) {
     const L = Math.round(Number(p.levels));

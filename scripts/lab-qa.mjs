@@ -41,7 +41,14 @@ if (prefix) {
 }
 
 let failed = 0;
-for (const id of ids) {
+// 開発サーバーで他のファイルが更新されるとページが再読み込みされることがある。その場合は同じIDをやり直す
+const isReload = (e) => /Execution context was destroyed|navigation|Target closed|frame was detached/i.test(String(e?.message ?? e));
+const reloadBase = async () => {
+  await page.goto(base);
+  await page.waitForSelector('.card');
+};
+
+async function checkOne(id) {
   const before = errors.length;
   const problems = [];
   for (let round = 0; round < 2; round++) {
@@ -83,16 +90,36 @@ for (const id of ids) {
     await page.evaluate(() => (location.hash = '#/'));
     await page.waitForTimeout(250);
   }
-  const errs = errors.slice(before);
+  const errs = errors.slice(before).filter((e) => !/\[vite\]|Failed to fetch dynamically imported module/.test(e));
   if (errs.length) problems.push(...errs);
+  return problems;
+}
+
+for (const id of ids) {
+  let problems = null;
+  for (let attempt = 0; attempt < 4 && !problems; attempt++) {
+    try {
+      problems = await checkOne(id);
+    } catch (e) {
+      if (!isReload(e) || attempt === 3) problems = [`exception: ${String(e?.message ?? e).split('\n')[0]}`];
+      else await reloadBase().catch(() => {});
+    }
+  }
   if (problems.length) failed++;
   console.log(`${id} ${problems.length ? 'NG' : 'OK'}${problems.length ? '\n  ' + problems.join('\n  ') : ''}`);
 }
 
 // セルフテスト（対象IDだけ）
-await page.goto(`${base}/#/selftest?ids=${encodeURIComponent(ids.join(','))}`);
-await page.waitForFunction(() => window.__selftest, null, { timeout: 300000 });
-const st = await page.evaluate(() => window.__selftest);
+let st = null;
+for (let attempt = 0; attempt < 4 && !st; attempt++) {
+  try {
+    await page.goto(`${base}/#/selftest?ids=${encodeURIComponent(ids.join(','))}`);
+    await page.waitForFunction(() => window.__selftest, null, { timeout: 300000 });
+    st = await page.evaluate(() => window.__selftest);
+  } catch (e) {
+    if (!isReload(e) || attempt === 3) throw e;
+  }
+}
 for (const r of st.results.filter((r) => ids.includes(r.id))) {
   const bad = !r.ok || r.leaked > 0;
   if (bad) failed++;

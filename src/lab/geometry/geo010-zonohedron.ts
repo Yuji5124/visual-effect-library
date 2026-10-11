@@ -120,7 +120,8 @@ export default defineGeometryDemo({
       const corner = new THREE.Vector3().sub(half);
       const lp: number[] = [];
       const lc: number[] = [];
-      const cones = new THREE.InstancedMesh(new THREE.ConeGeometry(0.06, 0.18, 10).translate(0, -0.09, 0), new THREE.MeshBasicMaterial(), n);
+      const cones = new THREE.InstancedMesh(new THREE.ConeGeometry(0.06, 0.18, 10).translate(0, -0.09, 0), new THREE.MeshBasicMaterial({ depthTest: false }), n);
+      cones.renderOrder = 10;
       const up = new THREE.Vector3(0, 1, 0);
       gens.forEach((g, i) => {
         const tip = corner.clone().add(g);
@@ -134,7 +135,9 @@ export default defineGeometryDemo({
       const lg = new THREE.BufferGeometry();
       lg.setAttribute('position', new THREE.Float32BufferAttribute(lp, 3));
       lg.setAttribute('color', new THREE.Float32BufferAttribute(lc, 3));
-      grp.add(new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ vertexColors: true })), cones);
+      const ln = new THREE.LineSegments(lg, new THREE.LineBasicMaterial({ vertexColors: true, depthTest: false }));
+      ln.renderOrder = 10;
+      grp.add(ln, cones);
       helpers = grp;
     }
     return {

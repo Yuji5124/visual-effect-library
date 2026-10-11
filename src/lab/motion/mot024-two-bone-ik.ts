@@ -19,7 +19,7 @@ export default defineMotionDemo({
       ],
     },
   ],
-  create(env) {
+  create() {
     const pt = new PointerTracker();
     const base = { x: -4, y: -1 };
     const tgt = { x: 4, y: 0 };

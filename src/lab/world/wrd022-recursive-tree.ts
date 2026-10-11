@@ -118,7 +118,7 @@ export default defineWorldDemo({
       before,
       info: () => `枝 ${nSeg.toLocaleString()} 本 · 葉 ${nLeaf.toLocaleString()} 枚 · 実効の深さ ${t.depth}${t.depth < prm.depth ? '（本数上限で制限）' : ''} · 成長 ${(f * 100).toFixed(0)}%`,
       update(_dt, time, live) {
-        f = live.grow ? Math.min(1, time / 5) : 1;
+        f = live.grow ? Math.min(1, time / 3.5) : 1;
         // 幅優先の順に並んでいるので、表示数を指数的に増やすと根元から先端へ一定の速さで育つ
         tree.bark.mesh.count = Math.round(Math.pow(nSeg, Math.min(1, f * 1.25)));
         tree.leaf.mesh.count = f > 0.8 ? Math.ceil(nLeaf * (f - 0.8) * 5) : 0;

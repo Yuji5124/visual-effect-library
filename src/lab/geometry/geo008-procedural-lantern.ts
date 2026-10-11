@@ -137,7 +137,7 @@ export default defineGeometryDemo({
       const kind = q.name.replace(/[0-9]+$/, '');
       if (!kinds.has(kind)) kinds.set(kind, kinds.size);
       const m = new THREE.Mesh(q.geo.clone(), new THREE.MeshStandardMaterial({ color: PALETTE[kinds.get(kind)! % PALETTE.length], roughness: 0.7, flatShading: true, side: THREE.DoubleSide }));
-      m.position.y = kinds.get(kind)! * 0.28;
+      m.position.y = kinds.get(kind)! * 0.2;
       before.add(m);
     });
     for (const q of parts) q.geo.dispose();

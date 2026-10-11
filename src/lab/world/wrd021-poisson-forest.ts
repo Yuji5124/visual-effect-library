@@ -63,7 +63,7 @@ export default defineWorldDemo({
         `左=一様ランダム / 右=ポアソンディスク · ${shown}/${total} 本 · r 未満の近接（ランダム）${violations} 本 · 平均最近傍 ランダム ${mean(nnU).toFixed(2)} / PD ${mean(nnP).toFixed(2)}（PD最小 ${minP.toFixed(2)} ≥ r）`,
       update(_dt, time, live) {
         helpers.visible = Boolean(live.circles);
-        shown = live.replay ? Math.min(total, Math.floor((time / 5) * total)) : total;
+        shown = live.replay ? Math.min(total, Math.floor((time / 3.5) * total)) : total;
         for (const s of sets) {
           s.trunks.mesh.count = shown;
           s.crowns.mesh.count = shown;

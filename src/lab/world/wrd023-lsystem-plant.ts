@@ -192,7 +192,7 @@ export default defineWorldDemo({
     };
     fill(G);
     let reveal = 1;
-    const period = 2.4;
+    const period = 2;
     return {
       object: group,
       info: () => `世代 ${shownGen}/${G} · 文字列長 ${strs[shownGen].length.toLocaleString()} · 枝 ${shapes[shownGen].nSeg.toLocaleString()} · 葉 ${shapes[shownGen].nLeaf.toLocaleString()}${strs.length - 1 < maxGen ? ' · 長さ上限で打ち切り' : ''}`,
@@ -201,8 +201,9 @@ export default defineWorldDemo({
         reveal = 1;
         if (live.animate) {
           const cyc = time / period;
-          g = Math.floor(cyc) % (G + 2);
-          if (g > G) g = G; // 最終世代は2周期ぶん見せる
+          // 世代1から順に（公理だけの世代0は省く）、最終世代は2周期ぶん見せる
+          g = 1 + (Math.floor(cyc) % (G + 1));
+          if (g > G) g = G;
           else reveal = Math.min(1, (cyc - Math.floor(cyc)) * 1.6);
         }
         if (g !== shownGen) fill(g);
