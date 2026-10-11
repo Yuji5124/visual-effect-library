@@ -1,2 +1,163 @@
-# visual-effect-library
-200 interactive visual effects for Three.js, WebGL and creative coding. A reusable VFX playground for games, art and experimental worlds.
+# VISUAL EFFECT LIBRARY 200
+
+Three.js / WebGL / GLSL を中心にした **200種類の映像演出の実験室**。
+カタログを眺めるだけのサムネイル集ではなく、各演出が実際に動き、パラメータを触り、重ね合わせ、
+そのまま他の Three.js ゲーム（MUTOPIA / GIANT CLIMB など）へ移植できることを目的にしています。
+
+- 200件のメタデータ（20カテゴリ × 10件）を登録済み
+- **実装済み 32件 + 実験中 1件**（Phase 1 目標の「代表的な20種類」を超過）
+- 未実装の演出には偽のプレビューを出さず、「未実装」と技術方式だけを表示
+
+## 使い方
+
+```bash
+npm install
+npm run dev      # http://localhost:5173 （同一LAN の iPad からも `--host` で接続可）
+npm test         # カタログ整合性・レジストリ・JSON検証のテスト
+npm run build    # 型チェック + 本番ビルド（dist/）
+```
+
+Windows / macOS / Linux いずれも Node.js 20 以上で動作します。API課金・外部サービスへの通信は一切ありません。
+
+### 画面の機能
+
+| 機能 | 場所 |
+| --- | --- |
+| カテゴリ別一覧・ライブプレビュー | トップページ（見えているカードだけが動く） |
+| 検索（名前・番号・説明・技術名、スペースでAND） | 上部の検索欄（`/` キーでフォーカス） |
+| 実装状況・技術方式・お気に入りで絞り込み | 検索欄の右 |
+| 全画面表示 | カードをクリック／タップ |
+| パラメータのリアルタイム調整 | ビューア右パネル「調整・組み合わせ」 |
+| ランダム再生・自動再生 | ヘッダーの「ランダム再生」、ビューアの「ランダム」「自動再生」 |
+| 複数エフェクトの組み合わせ | 入力ソースを選び、ポストエフェクトを追加・並べ替え・無効化 |
+| ランダム合成 | ソース＋1〜3個のポストをパラメータごとランダム生成 |
+| お気に入り・プリセット保存 | ☆ボタン／「プリセット・書き出し」（ブラウザの localStorage に保存） |
+| 設定のJSON書き出し・読み込み | 「JSON書き出し」「JSONをコピー」「JSON読込」 |
+| 移植用コード例 | ビューア右パネル「移植コード」 |
+| 動作確認 | ヘッダーの「セルフテスト」（全演出を生成→描画→破棄し、エラーとリソース残存を検査） |
+
+キーボード: `Esc` 一覧へ / `←` `→` 前後の演出 / `R` ランダム / `F` 全画面 / `P` パネル表示切替。
+生成系の一部（リアクションディフュージョン、ライフゲーム）は画面をドラッグすると干渉できます。
+
+## 実装済みの演出
+
+| ID | 演出 | 種類 | 技術 |
+| --- | --- | --- | --- |
+| 003 | RGBスプリット | POST | GLSL 1パス |
+| 004 | ブロックノイズ | POST | GLSL 1パス（ハッシュ選択ブロック） |
+| 005 | スライスグリッチ | POST | GLSL 1パス |
+| 008 | ビットクラッシュ | POST | GLSL 1パス（解像度・階調の量子化） |
+| 016 | ループトンネル | SOURCE | GLSL生成（**実験中**） |
+| 017 | フィードバックループ | POST | 前フレーム保持バッファ（半精度）×2 |
+| 021 | ピクセル化 | POST | GLSL 1パス |
+| 022 | ASCIIアート化 | POST | GLSL + Canvas2D グリフアトラス |
+| 023 | ディザリング | POST | 8×8 Bayer（ビット分解で計算） |
+| 024 | ハーフトーン | POST | CMYK 4版・回転網点 |
+| 028 | CRTスキャンライン | POST | 樽型歪み・走査線・アパーチャマスク |
+| 031 | ブルーム | POST | ソフトニー抽出 + 4段縮小ガウスぼかし |
+| 033 | 色相回転 | POST | YIQ回転 |
+| 036 | デュオトーン | POST | 輝度→2色マッピング |
+| 041 | ウェーブディストーション | POST | UV正弦波（横・縦・波紋） |
+| 042 | ツイスト | POST | 距離依存回転 |
+| 047 | カレイドスコープ | POST | 極座標の折り返し |
+| 053 | フローフィールド | SOURCE | CPU粒子 + 軌跡蓄積バッファ |
+| 059 | メタボール | SOURCE | GLSL場の合成 + 擬似法線 |
+| 060 | リアクションディフュージョン | SOURCE | GPGPU（Gray-Scott, ピンポン） |
+| 067 | 色収差 | POST | 波長重み付き多重サンプル |
+| 071 | フラクタルズーム | SOURCE | マンデルブロ（スムーズ着色・自動ループ） |
+| 073 | レイマーチング | SOURCE | SDF + ソフトシャドウ + AO |
+| 074 | ボロノイ分割 | SOURCE | 2パス厳密境界距離 |
+| 077 | ライフゲーム | SOURCE | GPGPU（ルール切替可・残像付き） |
+| 080 | ストレンジアトラクター | SOURCE | CPU積分（4方程式）+ Points |
+| 081 | VHSノイズ | POST | YIQ色にじみ・トラッキング帯 |
+| 082 | フィルムグレイン | POST | 輝度依存グレイン・傷・フリッカー |
+| 101 | モアレ干渉 | SOURCE | 高周波パターンの乗算 |
+| 118 | ヒートマップ視覚化 | POST | サーマルカラーマップ |
+| 119 | エッジ検出 | POST | Sobel（方向で色分け可） |
+| 131 | Boids群れ行動 | SOURCE | CPU + 一様グリッド近傍探索 + InstancedMesh |
+| 144 | コードレイン | SOURCE | GLSL + グリフアトラス |
+
+**POST** = 入力映像を加工する演出（いくつでも重ねられる）。**SOURCE** = 映像を生成する演出（POSTの入力にできる）。
+すべての演出が 200種類を同じ技術で無理に作らない方針に沿い、GLSL・GPGPU・CPUシミュレーション・インスタンシングを使い分けています。
+
+## 設計
+
+```
+src/
+  data/            演出メタデータ（描画コードを一切含まない）
+    catalog.ts       200件の名前・説明・技術方式
+    categories.ts    20カテゴリ
+  engine/          描画エンジン（演出に依存しない共通部）
+    types.ts         演出モジュールのインターフェース
+    pipeline.ts      ソース1つ → ポストN個 の描画パイプライン（失敗の隔離）
+    shaderEffect.ts  1パスGLSL演出の定義ヘルパー（uniform自動生成）
+    sceneSource.ts   任意の Three.js シーンをパイプライン入力にするラッパー
+    gpgpu.ts         ピンポンバッファ
+    demoScene.ts     ポスト演出確認用のデモシーン
+  effects/
+    registry.ts      実装済み演出の登録表（ここに無いIDは自動で「未実装」）
+    post/  source/   演出本体（1ファイル1演出、個別チャンクで遅延読み込み）
+  ui/              カタログ・ビューア・プレビュー・JSON入出力・セルフテスト
+  index.ts         他プロジェクトへ移植する時の公開API
+```
+
+### 方針と実装上の工夫
+
+- **データと描画の分離**: `catalog.ts` は文字列データのみ。実装状況は `registry.ts` に1行登録されているかで決まる（`実装済み` / `実験中` / `未実装`）。
+- **失敗の隔離**: 演出は動的 import で個別に読み込むため、1ファイルの構文エラーやネットワーク失敗は他に波及しない。
+  シェーダーのコンパイルエラーは `renderer.debug.onShaderError` で捕捉し、例外は段ごとの `try/catch` で捕捉して、**その段だけ停止**（パネルに理由と再試行ボタンを表示）。
+- **WebGLリソースの解放**: すべての演出は `dispose()` で render target・material・geometry・texture を解放。
+  セルフテストで生成→描画→破棄後の `renderer.info.memory` を比較し、全演出でリーク0を確認済み。
+  ビューアを閉じると専用のWebGLコンテキストを `forceContextLoss()` で即返却。
+- **iPad向けの負荷調整**:
+  - カードのプレビューは **共有レンダラー1つ** で描画し、各カードの2Dキャンバスへ転写（WebGLコンテキスト数の上限を回避）。画面内のカードだけを生成し、外れたら即破棄。1フレームに描画するカード数も制限。
+  - iPad / スマホを検出すると「品質: 軽量」が既定（粒子数・反復回数・レイマーチのステップ数・最大描画ピクセル数を削減）。
+  - ビューアは実測フレーム時間から描画解像度を自動で上下（45%〜100%）。
+  - タブが非表示の間は描画停止。WebGLコンテキスト消失・復帰にも対応。
+- **色空間の約束事**: パイプラインを流れるテクスチャはすべて表示空間（sRGBエンコード済み）。3Dシーンは `SceneSource` がHDR描画→ACESトーンマップ→sRGB化してから渡すため、グリッチ系シェーダーが期待どおりに働く。
+
+## 演出を追加する（Phase 2 の作業手順）
+
+1. `src/effects/post/eXXX-name.ts`（加工系）または `src/effects/source/eXXX-name.ts`（生成系）を作成
+   - 1パスのGLSLなら `defineShaderPost` / `defineShaderSource` を使うだけ。パラメータ `amount` は自動で `uniform float uAmount;` になる
+   - 複数パスやシミュレーションは `PostEffect` / `SourceEffect` を直接実装（`e031-bloom.ts`, `e060-reaction-diffusion.ts` を参照）
+2. `src/effects/registry.ts` に `{ id, kind, status, file }` を1行追加
+3. `npm test`（パラメータ定義の整合性を自動検査）→ `npm run dev` で「セルフテスト」を実行
+
+## 他の Three.js ゲームへの移植（MUTOPIA など）
+
+ビューアの「移植コード」タブに、現在の組み合わせ・パラメータを反映したコードが3種類表示されます。
+
+1. **パイプラインAPI（推奨）** — `src/engine`・`src/effects`・`src/index.ts` を `vfx/` としてコピー。
+   ゲームの既存シーンを `SceneSource` で包み、`renderer.render()` の代わりに `fx.render()` を呼ぶ。
+   ※ `effects/registry.ts` は Vite の `import.meta.glob` を使います。Vite 以外のバンドラーでは、演出ファイルを直接 import してください（移植コードの例はこの形式）。
+2. **EffectComposer / ShaderPass** — 1パスのGLSL演出は、依存ファイルなしの単体シェーダー定義として出力。既に `three/examples` のポストプロセスを使っているプロジェクトに直接追加できる。
+3. **ShaderMaterial** — 生成系シェーダーをゲーム内のモニター・ポータル・空などのメッシュに貼る単体コード。
+
+加えて、設定は `vfx200-stack` 形式のJSONで書き出せるため、ゲーム側でパラメータを読み込んで演出を再現できます。
+
+## GitHub Pages で公開
+
+`vite.config.ts` は `base: './'` なので、サブパスでもそのまま動きます。
+`.github/workflows/deploy.yml` が `main` への push でテスト→ビルド→Pages へデプロイします。
+初回のみリポジトリの **Settings → Pages → Build and deployment → Source** を「GitHub Actions」に設定してください。
+
+## ロードマップ
+
+- **Phase 1（本コミット）**: 200件カタログ・検索・フィルタ・ライブプレビュー・全画面ビューア・パラメータ調整・代表演出33件
+- **Phase 2**: フレーム履歴バッファ系（データモッシュ、スリットスキャン等）、流体ソルバー（インク拡散・煙）、Physarum、物理エンジン（剛体・布）、Web Audio 連動、WebGPU（ニューラルスタイル転写など重い演出）
+- **Phase 3**: 組み合わせプリセットの共有、MUTOPIA 向けのエクスポート形式（※組み合わせ・プリセット保存・JSON・移植コードの基礎は Phase 1 で先行実装済み）
+
+## ライセンス
+
+本リポジトリのコードは MIT License（`LICENSE`）。全演出・全シェーダーは独自実装で、他プロジェクトのコードは複製していません
+（Gray-Scott、Boids、Sobel、Bayer ディザ、ローレンツ方程式などは公知のアルゴリズム・数式に基づく実装です）。
+
+| 依存ライブラリ | 用途 | ライセンス |
+| --- | --- | --- |
+| [three](https://github.com/mrdoob/three.js) | WebGL描画 | MIT |
+| [vite](https://github.com/vitejs/vite) | 開発サーバー・ビルド（開発時のみ） | MIT |
+| [typescript](https://github.com/microsoft/TypeScript) | 型チェック（開発時のみ） | Apache-2.0 |
+| [vitest](https://github.com/vitest-dev/vitest) | テスト（開発時のみ） | MIT |
+
+実行時に読み込まれるのは three のみです。フォントは閲覧端末にインストール済みのものを使い、外部から取得しません。
