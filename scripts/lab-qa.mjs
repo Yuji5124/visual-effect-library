@@ -86,6 +86,9 @@ async function checkOne(id) {
       await page.screenshot({ path: `${out}/${id}.png` });
       const notice = await page.locator('.notice').textContent();
       if (notice && /エラー|error/i.test(notice)) problems.push(`notice: ${notice}`);
+      // パイプラインが演出を停止した場合（例外・シェーダーエラー）はパネルにエラー表示が出る
+      const stageErr = await page.locator('.stage-error pre').first().textContent().catch(() => null);
+      if (stageErr) problems.push(`stage error: ${stageErr.slice(0, 300)}`);
     }
     await page.evaluate(() => (location.hash = '#/'));
     await page.waitForTimeout(250);
