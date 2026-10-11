@@ -10,12 +10,17 @@ const TYPES = [
   { key: 'chordal', label: '弦長 α=1', color: 0x5ab8ff, r: 0.04 },
 ] as const;
 
-/** 通過点：u（不均一さ）が大きいほど一部の点の組が極端に近づく */
+/** 通過点：V字の谷が2点の組になっていて、u（不均一さ）が大きいほど組の2点が極端に近づく */
 function passPoints(u: number): THREE.Vector3[] {
-  const base: [number, number][] = [[-4, -1], [-2.6, 1.6], [-1.2, -0.6], [0.2, 1.8], [1.6, -0.4], [2.8, 1.4], [4, -0.8]];
-  const pts = base.map(([x, y]) => new THREE.Vector3(x, y + 1.2, 0));
-  // 2→3 と 4→5 の組を寄せ、間隔を不揃いにする
-  for (const k of [2, 4]) pts[k].lerp(pts[k + 1], u * 0.93);
+  const base: [number, number][] = [[-4.5, 2.6], [-3, 0], [-1.8, 0], [-0.3, 2.8], [1, 0.2], [2.2, 0.2], [4.2, 2.4]];
+  const pts = base.map(([x, y]) => new THREE.Vector3(x, y + 0.6, 0));
+  // 組 (1,2) と (4,5) を中点へ寄せる。隣の点は遠いままなので一様版の接線が相対的に長くなる
+  for (const k of [1, 4]) {
+    const mid = pts[k].clone().add(pts[k + 1]).multiplyScalar(0.5);
+    const f = 1 - u * 0.93;
+    pts[k].sub(mid).multiplyScalar(f).add(mid);
+    pts[k + 1].sub(mid).multiplyScalar(f).add(mid);
+  }
   pts.forEach((p, i) => (p.z = Math.sin(i * 1.3) * 0.25));
   return pts;
 }
@@ -47,7 +52,7 @@ export default defineGeometryDemo({
   liveKeys: ['uneven', 'animate'],
   distance: 10,
   elevation: 0.15,
-  target: [0, 1.2, 0],
+  target: [0, 1.8, 0],
   compareLabels: ['通過点の折れ線', 'Catmull-Rom'],
   build(p, env) {
     const segs = env.quality === 'low' ? 160 : 260;

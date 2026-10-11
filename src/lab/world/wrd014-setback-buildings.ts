@@ -12,7 +12,7 @@ export default defineWorldDemo({
   params: [
     { key: 'front', label: '前面後退', type: 'number', min: 0, max: 0.25, step: 0.005, default: 0.06 },
     { key: 'side', label: '隣地後退', type: 'number', min: 0, max: 0.15, step: 0.005, default: 0.03 },
-    { key: 'far', label: '容積率（%）', type: 'number', min: 50, max: 1000, step: 10, default: 300 },
+    { key: 'far', label: '容積率（%）', type: 'number', min: 50, max: 1000, step: 10, default: 500 },
     { key: 'maxH', label: '最高高さ', type: 'number', min: 0.2, max: 3, step: 0.05, default: 1.8 },
     { key: 'slope', label: '道路斜線（道路幅で高さを制限）', type: 'bool', default: true },
     { key: 'frontage', label: '間口', type: 'number', min: 0.3, max: 1.2, step: 0.01, default: 0.55 },
@@ -55,8 +55,8 @@ export default defineWorldDemo({
         // 細すぎる（角地の三角形など）建築面積には建てない
         let per = 0;
         for (let i = 0; i < fp.pts.length; i++) per += Math.hypot(fp.pts[(i + 1) % fp.pts.length][0] - fp.pts[i][0], fp.pts[(i + 1) % fp.pts.length][1] - fp.pts[i][1]);
-        if (fa < 0.012 || (2 * fa) / per < 0.06) continue;
-        const lotFar = far * (lot.road >= width(1) * 0.99 ? 1.6 : 1) * (0.85 + rng() * 0.3);
+        if (fa < 0.015 || fa < la * 0.25 || (2 * fa) / per < 0.08) continue;
+        const lotFar = far * (lot.road >= width(1) * 0.99 ? 1.6 : 1) * (0.6 + rng() * 0.8);
         const nFar = Math.max(1, Math.floor((lotFar * la) / fa));
         const nH = Math.max(1, Math.floor(maxH / FLOOR));
         const nRoad = Boolean(p.slope) ? Math.max(1, Math.floor((4 * (lot.road + front)) / FLOOR)) : Infinity;

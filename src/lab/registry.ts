@@ -129,6 +129,7 @@ export const LAB_REGISTRY: readonly LabRegistryEntry[] = [
   { id: 'WRD-012', kind: 'source', status: 'implemented', file: 'lab/world/wrd012-recursive-blocks' },
   { id: 'WRD-013', kind: 'source', status: 'implemented', file: 'lab/world/wrd013-lot-subdivision' },
   { id: 'WRD-014', kind: 'source', status: 'implemented', file: 'lab/world/wrd014-setback-buildings' },
+  { id: 'WRD-015', kind: 'source', status: 'implemented', file: 'lab/world/wrd015-parametric-facade' },
   { id: 'WRD-018', kind: 'source', status: 'implemented', file: 'lab/world/wrd018-density-heights' },
   { id: 'WRD-019', kind: 'source', status: 'implemented', file: 'lab/world/wrd019-voronoi-town' },
   { id: 'WRD-021', kind: 'source', status: 'implemented', file: 'lab/world/wrd021-poisson-forest' },
