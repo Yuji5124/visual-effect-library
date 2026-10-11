@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "registry": "node scripts/gen-registry.mjs"
   },
   "dependencies": {
     "three": "^0.186.1"

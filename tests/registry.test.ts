@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { REGISTRY, availability, loadEffect } from '../src/effects/registry';
-import { getEntry } from '../src/data/catalog';
+import { CATALOG, getEntry } from '../src/data/catalog';
+
+const PLANNED = CATALOG.find((e) => availability(e.id) === 'planned')!.id;
 
 describe('実装レジストリ', () => {
   it('20件以上が実装済み・IDはカタログに存在し重複なし', () => {
@@ -10,7 +12,7 @@ describe('実装レジストリ', () => {
   });
 
   it('未登録の演出は「未実装」扱い', () => {
-    expect(availability('001')).toBe('planned');
+    expect(availability(PLANNED)).toBe('planned');
     expect(availability('003')).toBe('implemented');
   });
 
@@ -33,6 +35,6 @@ describe('実装レジストリ', () => {
   });
 
   it('未実装IDの読み込みは失敗として閉じ込められる', async () => {
-    await expect(loadEffect('001')).rejects.toThrow('未実装');
+    await expect(loadEffect(PLANNED)).rejects.toThrow('未実装');
   });
 });
