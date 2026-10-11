@@ -26,6 +26,7 @@ export class Viewer {
   private readonly stage: HTMLElement;
   private readonly canvas: HTMLCanvasElement;
   private readonly hud: HTMLElement;
+  private readonly notice: HTMLElement;
   private readonly panel: HTMLElement;
   private readonly panelBody: HTMLElement;
   private readonly title: HTMLElement;
@@ -56,7 +57,8 @@ export class Viewer {
   ) {
     this.canvas = h('canvas', { class: 'viewer-canvas', 'aria-label': '演出プレビュー' });
     this.hud = h('div', { class: 'hud' });
-    this.stage = h('div', { class: 'viewer-stage' }, this.canvas, this.hud);
+    this.notice = h('div', { class: 'notice', role: 'status' });
+    this.stage = h('div', { class: 'viewer-stage' }, this.canvas, this.hud, this.notice);
     this.title = h('div', { class: 'viewer-title' });
     this.favBtn = h('button', { class: 'icon-btn', title: 'お気に入り', onclick: () => this.toggleFavorite() });
     this.autoBtn = h('button', {
@@ -221,6 +223,7 @@ export class Viewer {
       stage.enabled = post.enabled;
     }
     this.hud.textContent = '';
+    this.notice.textContent = '';
     this.time = 0;
     this.frame = 0;
     this.resScale = 1;
@@ -314,7 +317,22 @@ export class Viewer {
     this.last = now;
     this.time += dt;
     p.render({ time: this.time, dt, frame: this.frame++ }, true);
+    if (this.frame % 15 === 0) this.updateNotice();
     this.adaptResolution(raw * 1000);
+  }
+
+  private updateNotice(): void {
+    const p = this.pipeline;
+    const stages = p ? [p.source, ...p.posts] : [];
+    let msg = '';
+    for (const s of stages) {
+      const m = s?.enabled ? s.instance?.status?.() : null;
+      if (m) {
+        msg = m;
+        break;
+      }
+    }
+    if (this.notice.textContent !== msg) this.notice.textContent = msg;
   }
 
   /** 実測フレーム時間から描画解像度を自動調整（iPad等で滑らかさを優先） */
@@ -336,10 +354,12 @@ export class Viewer {
 
   private bindPointer(): void {
     const send = (e: PointerEvent, down: boolean) => {
-      const inst = this.pipeline?.source?.instance;
-      if (!inst?.pointer) return;
+      const p = this.pipeline;
+      if (!p) return;
       const r = this.canvas.getBoundingClientRect();
-      inst.pointer((e.clientX - r.left) / r.width, 1 - (e.clientY - r.top) / r.height, down);
+      const x = (e.clientX - r.left) / r.width;
+      const y = 1 - (e.clientY - r.top) / r.height;
+      for (const s of [p.source, ...p.posts]) s?.instance?.pointer?.(x, y, down);
     };
     this.canvas.addEventListener('pointerdown', (e) => {
       this.pointerDown = true;
@@ -661,7 +681,8 @@ export class Viewer {
         h('p', { class: 'small muted', text: `種類: ${mod.kind === 'source' ? '映像を生成するソース演出' : '入力映像を加工するポスト演出（他と組み合わせ可）'}` }),
       );
       if (mod.notes) root.append(h('h3', { text: '実装メモ' }), h('p', { text: mod.notes }));
-      if (mod.kind === 'source' && this.pipeline?.source?.instance?.pointer) {
+      const stage = [this.pipeline?.source, ...(this.pipeline?.posts ?? [])].find((s) => s?.module.id === mod.id);
+      if (stage?.instance?.pointer) {
         root.append(h('p', { class: 'hint', text: '画面をドラッグすると演出に干渉できます。' }));
       }
     } else if (status === 'planned') {

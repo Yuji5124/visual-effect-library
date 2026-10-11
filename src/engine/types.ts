@@ -36,6 +36,8 @@ export interface SourceInstance {
   resize?(width: number, height: number): void;
   /** 入力イベント（ポインタ座標 0..1, 左下原点）。任意 */
   pointer?(x: number, y: number, down: boolean): void;
+  /** 利用者への案内（例: 「タップで音声開始」）。null なら非表示 */
+  status?(): string | null;
   dispose(): void;
 }
 
@@ -46,6 +48,8 @@ export interface SourceInstance {
 export interface PostInstance {
   render(input: THREE.Texture, target: THREE.WebGLRenderTarget, params: ParamValues, frame: FrameInfo): void;
   resize?(width: number, height: number): void;
+  pointer?(x: number, y: number, down: boolean): void;
+  status?(): string | null;
   dispose(): void;
 }
 

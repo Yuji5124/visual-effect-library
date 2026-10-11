@@ -243,3 +243,10 @@ pre.code {
 @media (prefers-reduced-motion: reduce) {
   .card { transition: none; }
 }
+
+.notice {
+  position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%); max-width: 90%;
+  padding: 8px 14px; border-radius: 10px; background: rgba(10, 10, 20, 0.8); border: 1px solid var(--accent);
+  color: var(--text); font-size: 14px; pointer-events: none; text-align: center;
+}
+.notice:empty { display: none; }
