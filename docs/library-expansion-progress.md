@@ -27,4 +27,20 @@
 
 ## 進捗ログ
 
-（各段階の終わりに追記）
+### Phase 1 基盤（完了）
+- `src/data/library/`：共通型 `LibraryEntry`、4分野＋サブカテゴリ（VISUAL は既存22カテゴリをそのまま `vfx-01`〜`vfx-22`、新規 GEO-A〜E / MOT-A〜E / WRD-A〜E）、既存216件のアダプター（`legacy` に元の CatalogEntry を保持・不変）、`LIBRARY`・`getLibraryEntry`・`matchesQuery`・`libraryStats`。
+- `src/lab/registry.ts`（生成）＋ `src/effects/registry.ts` の `ALL_REGISTRY`（既存の `REGISTRY` 配列は不変、後ろに合成）。`scripts/gen-registry.mjs` が `src/lab/{geometry,motion,world}/` を走査。
+- 実験場フレームワーク `src/lab/framework/`：`sceneLab.ts`（GEOMETRY/WORLD：軌道カメラ、パラメーター変更時だけ再生成して旧生成物を解放、生成前後の比較、ワイヤーフレーム、シード、操作ボタン、GLB書き出し）、`motionLab.ts`＋`draw2d.ts`（MOTION：2D即時描画・軌跡・クリックで目標変更・初期化）、`worldKit.ts`、`random.ts`、`orbit.ts`、`stage.ts`。
+- UI：一覧に ALL / VISUAL EFFECT / GEOMETRY / MOTION / WORLD GENERATION のタブ、サブカテゴリ、状況・技術・お気に入り・検索（ID・日英名・原理・タグ）。カードにサブカテゴリと状況。
+- ビューア：`GEO-001` 形式のルート、操作ボタン（再生成・同じシードで再生成・視点リセット等）、ホイール／ピンチズーム、再生／停止（Space）、GLB書き出し（GLTFExporter、書き出せない場合は理由を表示）、解説タブに原理・実装・参考資料（ライセンス）・関連技術リンク・負荷・モバイル対応。閉じて開き直す際の canvas 差し替え（Codex の修正）はそのまま維持。
+- セルフテストは `ALL_REGISTRY` 全件を対象にし、操作ボタンも押して例外を検出。`#/selftest?only=GEO` で絞り込み可。
+- ブラウザ検査 `scripts/lab-qa.mjs`（開く→操作ボタン→比較/ワイヤー→ドラッグ/ズーム→閉じて再度開く→スクリーンショット→セルフテスト）。
+
+### Phase 2 150件の登録（完了）
+- `src/data/library/geometry.ts` / `motion.ts` / `world.ts` に各50件。各件に原理・実装方法・参考資料（URL・ライセンス）・パラメーター・タグ・関連ID・負荷・モバイル対応。
+- 参考資料URLの到達確認 `npx vite-node scripts/check-references.ts` → `docs/reference-check.json`。初回 239/243 到達。到達できなかった4件（誤ったDOI 1件、存在しないWikipedia記事 1件、503 のPDF 1件、ボット拒否 1件）は到達できる資料へ差し替え、確認できない出典に基づく記述は削除した。**到達確認はHTTP応答の確認であり、全文を読んだことの証明ではない。** ライセンス欄は各資料の公開条件（Wikipedia＝CC BY-SA、GitHub リポジトリ＝そのライセンス、論文＝「—（論文）」）で、コードはどこからも複製していない。
+- テスト `tests/library.test.ts`：366件・ID重複なし・分野別件数・サブカテゴリ各10件・既存216件の順序と内容の不変・必須メタデータ・関連IDの実在・登録表との整合・検索／絞り込み。
+
+### Phase 3〜5 デモ実装（進行中）
+- 手本として GEO-022（ツイスト）、MOT-003（ばね）、WRD-001（fBm地形）を実装し、ブラウザ検査（操作・再オープン・リーク0）を通過。
+- 残りは分担して実装中（GEO 001–021/023–050、MOT 001–002/004–050、WRD 002–050）。

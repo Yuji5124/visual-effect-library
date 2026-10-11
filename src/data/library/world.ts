@@ -32,7 +32,7 @@ const SPECS: EntrySpec[] = [
     description: '雨粒を大量に落とし、坂を流れながら土を削って運び、緩やかな場所に堆積させる。谷筋と扇状地が現れる。',
     principle: '各水滴は勾配に沿って速度を得て移動し、運搬容量 = 傾き×速度×水量 を超えた分を堆積、下回れば削る。蒸発で水量が減ると最後に土を落とす。多数の水滴の積み重ねで谷が深まり、尾根が鋭くなる。',
     implementation: 'ノイズ地形に対して水滴を逐次シミュレーションし（双線形補間の高さと勾配、ブラシ半径での侵食）、毎フレーム一定数ずつ進めて変化を見せる。比較モードで侵食前の地形と並べる。Sebastian Lague の解説・MITコードを参考に独自に書き直した。',
-    refs: [{ label: 'SebLague/Hydraulic-Erosion（参考、コード非流用）', url: 'https://github.com/SebLague/Hydraulic-Erosion', license: 'MIT' }, { label: 'Hans Theobald Beyer (2015) Implementation of a method for hydraulic erosion', url: 'https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf', license: '—（論文）' }],
+    refs: [{ label: 'SebLague/Hydraulic-Erosion（参考、コード非流用）', url: 'https://github.com/SebLague/Hydraulic-Erosion', license: 'MIT' }, W('Erosion', 'Erosion')],
     parameters: ['シード', '水滴数/フレーム', '侵食率', '堆積率', '蒸発率', 'ブラシ半径'], tags: ['地形', '侵食', 'シミュレーション'], related: ['WRD-004', 'WRD-005', 'WRD-045'], perf: 'heavy', mobile: 'reduced',
   },
   {
@@ -56,7 +56,7 @@ const SPECS: EntrySpec[] = [
     description: 'ノイズの絶対値を反転させて鋭い稜線をつくり、高い所ほど細部を強める山脈。',
     principle: 'ridge(n) = (1−|n|)² で0付近が尖った尾根になる。各オクターブの重みを前のオクターブの値で決める（マルチフラクタル）ため、谷は滑らかで尾根ほど細かく険しくなる。',
     implementation: 'Musgrave の ridged multifractal を独自実装し、通常の fBm と比較表示する。offset と gain で尾根の鋭さと細部の集中度を調整し、標高で岩・雪の色を塗り分ける。',
-    refs: [{ label: 'Ebert et al. Texturing & Modeling: A Procedural Approach（Musgrave 章）', url: 'https://www.sciencedirect.com/book/9781558608481/texturing-and-modeling', license: '—（書籍）' }, REDBLOB_MAPGEN],
+    refs: [W('Fractal landscape', 'Fractal_landscape'), REDBLOB_MAPGEN],
     parameters: ['シード', 'オクターブ', 'offset', 'gain', '高さ'], tags: ['地形', '山脈', 'マルチフラクタル'], related: ['WRD-001'], perf: 'light', mobile: 'good',
   },
   {
@@ -144,9 +144,9 @@ const SPECS: EntrySpec[] = [
   {
     id: 'WRD-017', nameJa: '都市成長（拡散律速凝集）', nameEn: 'Urban Growth by DLA', sub: 'WRD-B',
     description: 'ランダムに歩く粒子が既存市街地に触れると定着する拡散律速凝集で、樹枝状に広がる都市の輪郭を作る。',
-    principle: 'DLA（拡散律速凝集）は先端ほど粒子が当たりやすいため、枝分かれしたフラクタル（次元≈1.7）になる。都市の外縁成長がこれに似たフラクタル性を示すことが指摘されている（Batty & Longley）。付着確率を下げると密な形になる。',
+    principle: 'DLA（拡散律速凝集）は先端ほど粒子が当たりやすいため、枝分かれしたフラクタル（次元≈1.7）になる。都市の外縁の不規則な広がりを模す単純なモデルとして使う。付着確率を下げると密な形になる。',
     implementation: '格子上でランダムウォーカーを多数動かし、市街地に隣接すると確率で定着させる。定着時刻で色を変え、成長の順序を見せる。中心からの距離と占有セル数の関係からフラクタル次元を推定して表示する。',
-    refs: [W('Diffusion-limited aggregation', 'Diffusion-limited_aggregation'), DOI('Batty, Longley & Fotheringham (1989) Urban growth and form', '10.1068/a210041')],
+    refs: [W('Diffusion-limited aggregation', 'Diffusion-limited_aggregation'), W('Urban growth', 'Urban_growth')],
     parameters: ['シード', '付着確率', '粒子数/フレーム', '中心の数'], tags: ['都市', 'DLA', 'フラクタル', '成長'], related: ['WRD-041', 'WRD-044'], perf: 'medium', mobile: 'good',
   },
   {
@@ -236,7 +236,7 @@ const SPECS: EntrySpec[] = [
     description: '密に生えた苗木が成長し、樹冠が重なる隣の木に負けたものから枯れて、間隔のそろった森になる。',
     principle: '各木の半径は資源に応じて成長し、より大きい隣の木と樹冠が重なると成長が止まり、一定期間で枯死する。初期の一様ランダム配置から、時間とともにポアソンディスクに近い間隔の配置へ自己組織化する（自己間引き則）。',
     implementation: '数百本の木の半径を時間発展させ、重なり判定を空間ハッシュで行う。生存本数と平均サイズの両対数グラフを表示し、−3/2 乗則に近い傾きになることを確認できる。',
-    refs: [W('Self-thinning', 'Self-thinning'), DOI('Lane & Prusinkiewicz (2002) Generating spatial distributions for multilevel models of plant communities', '10.20380/GI2002.08')],
+    refs: [W('Forest dynamics', 'Forest_dynamics'), DOI('Lane & Prusinkiewicz (2002) Generating spatial distributions for multilevel models of plant communities', '10.20380/GI2002.08')],
     parameters: ['シード', '初期本数', '成長速度', '枯死までの期間'], tags: ['森', '競争', '自己組織化'], related: ['WRD-021', 'WRD-025'], perf: 'medium', mobile: 'good',
   },
   {
