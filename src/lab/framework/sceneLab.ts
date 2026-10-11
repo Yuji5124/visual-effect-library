@@ -122,6 +122,8 @@ export function defineSceneLab(def: SceneLabDef, kind: 'geometry' | 'world'): So
       stage.root.add(beforeGroup, afterGroup);
 
       const layout = (compare: boolean, wire: boolean) => {
+        // 比較表示は2つ並ぶので、その分だけカメラを引く（戻すときは元の距離へ）
+        if (compare !== lastCompare) stage.rig.distance *= compare ? 1.7 : 1 / 1.7;
         lastCompare = compare;
         lastWire = wire;
         beforeGroup.visible = compare;

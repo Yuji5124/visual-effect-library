@@ -63,4 +63,6 @@ export interface LibraryEntry {
   mobileCompatibility: MobileCompatibility;
   /** YYYY-MM-DD */
   updatedAt: string;
+  /** VISUAL EFFECT（001〜216）のみ：変換元の既存カタログ項目（参照のみ・変更しない） */
+  legacy?: import('../catalog').CatalogEntry;
 }

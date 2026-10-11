@@ -101,7 +101,6 @@ export function defineMotionDemo(def: MotionDemoDef): SourceEffect {
           return sim?.action?.(key, p);
         },
         status: () => sim?.status?.(lastParams) ?? null,
-        exportUnavailableReason: () => 'MOTIONは時間に沿った運動のデモなので、形状としての書き出しは対象外です（パラメーターはJSONで書き出せます）。',
         dispose() {
           g.dispose();
           sim = null;

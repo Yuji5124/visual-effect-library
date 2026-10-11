@@ -1,7 +1,7 @@
 import type { EffectModule, ParamValues } from '../engine/types';
 import { paramToUniformValue, uniformName } from '../engine/shaderEffect';
 import { getRegistryEntry } from '../effects/registry';
-import { getEntry } from '../data/catalog';
+import { getLibraryEntry } from '../data/library';
 import type { StackConfig } from './storage';
 
 export interface CodeSection {
@@ -69,7 +69,7 @@ function pipelineSnippet(config: StackConfig, modules: Map<string, EffectModule>
   } else {
     lines.push(
       '',
-      `// 生成系の演出を入力にする（${getEntry(config.source.id)?.name ?? config.source.id}）`,
+      `// 生成系の演出を入力にする（${getLibraryEntry(config.source.id)?.nameJa ?? config.source.id}）`,
       `fx.setSource(${varName(config.source.id, modules.get(config.source.id))}, ${paramsLiteral(config.source.params)});`,
     );
   }
@@ -221,7 +221,7 @@ export function buildCodeSections(config: StackConfig, modules: Map<string, Effe
     if (!mod) continue;
     const params = id === config.source.id ? config.source.params : config.posts.find((p) => p.id === id)!.params;
     const pass = shaderPassSnippet(mod, params);
-    const name = getEntry(id)?.name ?? id;
+    const name = getLibraryEntry(id)?.nameJa ?? id;
     if (pass) {
       sections.push({
         title: `${id} ${name} — EffectComposer / ShaderPass`,

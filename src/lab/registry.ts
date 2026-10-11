@@ -15,4 +15,7 @@ export interface LabRegistryEntry {
 }
 
 export const LAB_REGISTRY: readonly LabRegistryEntry[] = [
+  { id: 'GEO-022', kind: 'source', status: 'implemented', file: 'lab/geometry/geo022-twist' },
+  { id: 'MOT-003', kind: 'source', status: 'implemented', file: 'lab/motion/mot003-damped-spring' },
+  { id: 'WRD-001', kind: 'source', status: 'implemented', file: 'lab/world/wrd001-fbm-terrain' },
 ];
