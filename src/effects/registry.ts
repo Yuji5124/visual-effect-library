@@ -9,6 +9,7 @@
  *   （カタログ側 src/data/catalog.ts の記述はそのまま。実装状況は自動で切り替わる）
  */
 import type { EffectModule, EffectStatus } from '../engine/types';
+import { LAB_REGISTRY } from '../lab/registry';
 
 export interface RegistryEntry {
   id: string;
@@ -20,6 +21,8 @@ export interface RegistryEntry {
 
 // 各演出ファイルを個別チャンクとして遅延読み込みする
 const loaders = import.meta.glob<{ default: EffectModule }>(['./post/*.ts', './source/*.ts']);
+// GEOMETRY / MOTION / WORLD GENERATION のデモ（src/lab）
+const labLoaders = import.meta.glob<{ default: EffectModule }>(['../lab/geometry/*.ts', '../lab/motion/*.ts', '../lab/world/*.ts']);
 
 export const REGISTRY: readonly RegistryEntry[] = [
   // 1. グリッチ・データ破壊
@@ -184,7 +187,13 @@ export const REGISTRY: readonly RegistryEntry[] = [
   { id: '216', kind: 'post', status: 'implemented', file: 'post/e216-grid-flip' },
 ];
 
-const byId = new Map(REGISTRY.map((r) => [r.id, r]));
+/** 001〜216 と GEO/MOT/WRD を合わせた全登録（REGISTRY 自体は既存の216件だけを持つ） */
+export const ALL_REGISTRY: readonly RegistryEntry[] = [
+  ...REGISTRY,
+  ...LAB_REGISTRY.map((r) => ({ ...r, file: `../${r.file}` })),
+];
+
+const byId = new Map(ALL_REGISTRY.map((r) => [r.id, r]));
 
 export function getRegistryEntry(id: string): RegistryEntry | undefined {
   return byId.get(id);
@@ -210,7 +219,7 @@ export function loadEffect(id: string): Promise<EffectModule> {
   if (!entry) return Promise.reject(new Error(`演出 ${id} は未実装です`));
   let p = cache.get(id);
   if (!p) {
-    const loader = loaders[`./${entry.file}.ts`];
+    const loader = entry.file.startsWith('../') ? labLoaders[`../${entry.file.slice(3)}.ts`] : loaders[`./${entry.file}.ts`];
     if (!loader) return Promise.reject(new Error(`演出 ${id} のファイル ${entry.file} が見つかりません`));
     p = loader().then((m) => {
       const mod = m.default;

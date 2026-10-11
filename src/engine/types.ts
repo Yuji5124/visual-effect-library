@@ -38,7 +38,24 @@ export interface SourceInstance {
   pointer?(x: number, y: number, down: boolean): void;
   /** 利用者への案内（例: 「タップで音声開始」）。null なら非表示 */
   status?(): string | null;
+  /** ホイール／ピンチによるズーム（正で遠ざかる）。任意 */
+  wheel?(delta: number): void;
+  /**
+   * 操作ボタン（モジュールの actions）が押された。
+   * パラメーターを書き換えたい場合は差分を返す（例: ランダムなシード）。
+   */
+  action?(key: string, params: ParamValues): Partial<ParamValues> | void;
+  /** GLB/GLTF書き出しの対象。書き出せない演出は exportUnavailableReason を返す */
+  exportObject?(): import('three').Object3D | null;
+  exportUnavailableReason?(): string | null;
   dispose(): void;
+}
+
+/** ビューアに表示する操作ボタン（再生成・リセットなど） */
+export interface ActionDef {
+  key: string;
+  label: string;
+  title?: string;
 }
 
 /**
@@ -64,6 +81,10 @@ interface EffectModuleBase {
   notes?: string;
   /** Three.js EffectComposer / ShaderMaterial に直接移植できるシェーダー情報 */
   shader?: { fragment: string; extraUniforms?: string[] };
+  /** ビューアに出す操作ボタン（GEOMETRY / MOTION / WORLD の実験場で使用） */
+  actions?: ActionDef[];
+  /** 3D操作（ドラッグ回転・ズーム）に対応するか。ビューアの案内表示に使う */
+  interaction?: 'orbit' | 'pan-zoom' | 'pointer';
 }
 
 export interface SourceEffect extends EffectModuleBase {
