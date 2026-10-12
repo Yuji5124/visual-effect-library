@@ -41,7 +41,9 @@ try {
   }
   await page.waitForSelector('.card');
   const stats=await page.locator('.stats').textContent();
-  if(!stats.includes('実装済み 138')||!stats.includes('未実装 78'))throw new Error(stats);
+  // 366件化（GEOMETRY/MOTION/WORLD 追加）後は総数で整合を確認する。既存216件の状況は tests/extensions-protection.test.ts と registry テストで保護
+  const num=(label)=>Number(stats.match(new RegExp(label+' (\\d+)'))?.[1]);
+  if(!stats.includes('VISUAL EFFECT 216')||num('実装済み')+num('実験中')+num('未実装')!==366)throw new Error(stats);
   await writeFile(out+'/ui-results.json',JSON.stringify({results,stats,errors},null,2));
   console.log(JSON.stringify({results,stats,errors},null,2));
   if(errors.length)throw new Error('UI errors');
