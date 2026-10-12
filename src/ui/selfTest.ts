@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { EffectPipeline } from '../engine/pipeline';
 import { demoScene } from '../engine/demoScene';
-import { REGISTRY, loadEffect } from '../effects/registry';
-import { getEntry } from '../data/catalog';
+import { ALL_REGISTRY, loadEffect } from '../effects/registry';
+import { getLibraryEntry } from '../data/library';
 import { h } from './dom';
 
 export interface SelfTestResult {
@@ -41,7 +41,13 @@ export async function runSelfTest(container: HTMLElement): Promise<SelfTestResul
     warm.render({ time: 0, dt: 1 / 30, frame: 0 }, true);
     warm.dispose();
   }
-  for (const reg of REGISTRY) {
+  // #/selftest?only=GEO のように接頭辞で対象を絞れる（既定は全件）
+  // #/selftest?ids=GEO-001,GEO-002 で個別指定も可
+  const q = new URLSearchParams(location.hash.split('?')[1] ?? '');
+  const only = q.get('only');
+  const ids = q.get('ids')?.split(',');
+  const targets = ALL_REGISTRY.filter((r) => (!only || r.id.startsWith(only)) && (!ids || ids.includes(r.id)));
+  for (const reg of targets) {
     const t0 = performance.now();
     const before = renderer.info.memory.textures + renderer.info.memory.geometries;
     let error: string | undefined;
@@ -53,7 +59,17 @@ export async function runSelfTest(container: HTMLElement): Promise<SelfTestResul
         quality: 'low',
         onError: (_s, msg) => (error ??= msg),
       });
-      if (mod.kind === 'source') p.setSource(mod);
+      if (mod.kind === 'source') {
+        p.setSource(mod);
+        // 操作ボタン（再生成・リセット等）も一通り押して例外が出ないことを確認する
+        const st = p.source!;
+        for (const a of mod.actions ?? []) {
+          if (a.key === 'export-glb') continue;
+          p.render({ time: 0, dt: 1 / 30, frame: 0 }, true);
+          const patch = (st.instance as import('../engine/types').SourceInstance | null)?.action?.(a.key, st.params);
+          if (patch) Object.assign(st.params, patch);
+        }
+      }
       else {
         p.setSource(demoScene);
         p.addPost(mod);
@@ -75,7 +91,7 @@ export async function runSelfTest(container: HTMLElement): Promise<SelfTestResul
         'tr',
         { class: r.ok ? 'ok' : 'ng' },
         h('td', { text: reg.id }),
-        h('td', { text: getEntry(reg.id)?.name ?? '' }),
+        h('td', { text: getLibraryEntry(reg.id)?.nameJa ?? '' }),
         h('td', { text: (r.ok ? 'OK' : `NG: ${error!.slice(0, 200)}`) + (leaked > 0 ? ` / リソース残存 ${leaked}` : '') }),
         h('td', { text: `${ms.toFixed(0)} ms` }),
       ),

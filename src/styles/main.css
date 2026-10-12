@@ -253,3 +253,17 @@ pre.code {
 
 .ref { margin: 0; font-size: 11px; color: var(--muted); }
 .kind.ext { color: #9ad0ff; border-color: #36507a; }
+
+/* ---------- 4分野タブ（VISUAL / GEOMETRY / MOTION / WORLD） ---------- */
+.main-nav { display: flex; gap: 8px; overflow-x: auto; margin-bottom: 12px; scrollbar-width: thin; }
+.main-tab {
+  flex: 1 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 52px;
+  padding: 8px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg2); text-align: left;
+}
+.main-tab .main-label { font-family: var(--mono); font-weight: 700; letter-spacing: 0.08em; color: var(--cat); font-size: 13px; }
+.main-tab .main-sub { font-size: 11px; color: var(--muted); }
+.main-tab.active { border-color: var(--cat); box-shadow: inset 0 -3px 0 var(--cat); }
+.cat-main { margin-left: auto; font-family: var(--mono); font-size: 11px; color: var(--muted); font-weight: 400; }
+.name-en { margin: -4px 0 0; font-size: 11px; color: var(--muted); font-family: var(--mono); }
+.kind.sub { color: var(--cat); border-color: var(--cat); }
+.filters select:disabled { opacity: 0.4; }

@@ -1,13 +1,15 @@
-# VISUAL EFFECT LIBRARY 200
+# VISUAL EFFECT LIBRARY 366
 
 **▶ 公開ページ: https://yuji5124.github.io/visual-effect-library/**（PC・iPad のブラウザでそのまま動きます）
 
-Three.js / WebGL / GLSL を中心にした **200種類の映像演出の実験室**。
+Three.js / WebGL / GLSL を中心にした **映像演出・形状・動き・世界生成の実験室（366項目）**。
 カタログを眺めるだけのサムネイル集ではなく、各演出が実際に動き、パラメータを触り、重ね合わせ、
 そのまま他の Three.js ゲーム（MUTOPIA / GIANT CLIMB など）へ移植できることを目的にしています。
 
-- 200件のメタデータ（20カテゴリ × 10件）＋ GitHub調査から採用した拡張演出16件（2カテゴリ）
-- **動く演出 133種**（実装済み 131 + 実験中 2）。基本20カテゴリすべてに3種以上、拡張16種はすべて動作
+- 4分野：**VISUAL EFFECT 216**（基本200＋拡張16）・**GEOMETRY 50**・**MOTION 50**・**WORLD GENERATION 50**（新規3分野は各5サブカテゴリ × 10件）
+- 実装済み 291（VISUAL 141、GEOMETRY/MOTION/WORLD 各50）・未実装 75（2026-10-12 時点。進捗は `docs/library-expansion-progress.md`）
+- GEOMETRY / WORLD のデモはドラッグ回転・ズーム・ワイヤーフレーム・処理前後の比較・シード・再生成・GLB書き出しに対応。MOTION は目標の変更・軌跡・速度調整・初期化に対応
+- 各項目に原理・実装方法・参考資料（URL とライセンス）・関連技術を記載
 - 未実装の演出には偽のプレビューを出さず、「未実装」と技術方式だけを表示
 
 ## 使い方

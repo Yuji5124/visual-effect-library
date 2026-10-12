@@ -2,8 +2,9 @@ import * as THREE from 'three';
 import { EffectPipeline, type Stage } from '../engine/pipeline';
 import { demoScene } from '../engine/demoScene';
 import type { EffectModule, Quality } from '../engine/types';
-import { REGISTRY, availability, AVAILABILITY_LABELS, loadEffect } from '../effects/registry';
-import { CATALOG, getEntry, TECH_LABELS } from '../data/catalog';
+import { ALL_REGISTRY, REGISTRY, availability, AVAILABILITY_LABELS, getRegistryEntry, loadEffect } from '../effects/registry';
+import { TECH_LABELS } from '../data/catalog';
+import { LIBRARY, getLibraryEntry, mainCategoryInfoOf, type LibraryEntry } from '../data/library';
 import { buildParamControls, randomizeParams } from './paramPanel';
 import { buildCodeSections } from './codeExample';
 import { parseStackConfig, sanitizeParams } from './configIO';
@@ -12,7 +13,15 @@ import { copyText, downloadText, h, toast } from './dom';
 
 type Tab = 'params' | 'info' | 'code';
 
-const PLAYABLE = CATALOG.filter((e) => availability(e.id) !== 'planned');
+const PLAYABLE = LIBRARY.filter((e) => availability(e.id) !== 'planned');
+
+const PERF_LABELS = { light: '軽い', medium: '普通', heavy: '重い' } as const;
+const MOBILE_LABELS = { good: '対応', reduced: '軽量化して対応', 'desktop-recommended': 'PC推奨', unverified: '未検証' } as const;
+
+/** 表示名（ライブラリ全体の日本語名） */
+function nameOf(id: string): string {
+  return getLibraryEntry(id)?.nameJa ?? '';
+}
 
 async function loadModule(id: string): Promise<EffectModule> {
   return id === 'demo' ? demoScene : loadEffect(id);
@@ -32,6 +41,10 @@ export class Viewer {
   private readonly title: HTMLElement;
   private readonly favBtn: HTMLButtonElement;
   private readonly autoBtn: HTMLButtonElement;
+  private readonly pauseBtn: HTMLButtonElement;
+  private paused = false;
+  private readonly touches = new Map<number, { x: number; y: number }>();
+  private pinchDist = 0;
   private renderer: THREE.WebGLRenderer | null = null;
   private pipeline: EffectPipeline | null = null;
   private readonly modules = new Map<string, EffectModule>();
@@ -66,6 +79,7 @@ export class Viewer {
       title: '一定時間ごとにランダムな演出へ切り替え',
       onclick: () => this.setAutoplay(!this.autoplay),
     });
+    this.pauseBtn = h('button', { class: 'tool-btn', title: '一時停止／再生 (Space)', onclick: () => this.setPaused(!this.paused) });
     this.panelBody = h('div', { class: 'panel-body' });
     const tabs = h(
       'div',
@@ -101,6 +115,7 @@ export class Viewer {
         onclick: () => void this.randomCombo(),
       }),
       this.autoBtn,
+      this.pauseBtn,
       h('button', { class: 'tool-btn', text: '⛶', title: '全画面表示 (F)', onclick: () => this.toggleFullscreen() }),
       h('button', {
         class: 'tool-btn',
@@ -113,6 +128,7 @@ export class Viewer {
     this.resizeObs = new ResizeObserver(() => this.resize());
     this.bindPointer();
     this.updateAutoBtn();
+    this.updatePauseBtn();
     window.addEventListener('keydown', (e) => this.onKey(e));
   }
 
@@ -175,7 +191,7 @@ export class Viewer {
 
   /** 1つの演出を開く。ポスト系はデモシーンの上に、生成系は単独で表示する */
   async open(id: string): Promise<void> {
-    const entry = getEntry(id);
+    const entry = getLibraryEntry(id);
     if (!entry) return;
     this.show();
     if (availability(id) === 'planned') {
@@ -184,12 +200,12 @@ export class Viewer {
       this.renderTitle();
       this.hud.innerHTML = '';
       this.hud.append(
-        h('div', { class: 'planned-msg' }, h('strong', { text: 'この演出は未実装です' }), h('p', { text: '偽のプレビューは表示しません。解説タブで実装方針を確認できます。' })),
+        h('div', { class: 'planned-msg' }, h('strong', { text: 'この項目は未実装です' }), h('p', { text: '偽のプレビューは表示しません。解説タブで原理と実装方針を確認できます。' })),
       );
       this.setTab('info');
       return;
     }
-    const reg = REGISTRY.find((r) => r.id === id)!;
+    const reg = getRegistryEntry(id)!;
     const config: StackConfig =
       reg.kind === 'source'
         ? { format: 'vfx200-stack', version: 1, source: { id, params: {} }, posts: [] }
@@ -227,6 +243,7 @@ export class Viewer {
     this.time = 0;
     this.frame = 0;
     this.resScale = 1;
+    this.setPaused(false);
     this.renderPanel();
     this.start();
   }
@@ -269,6 +286,7 @@ export class Viewer {
       this.canvas.replaceWith(canvas);
       this.canvas = canvas;
       this.pointerDown = false;
+      this.touches.clear();
       this.bindPointer();
     }
     this.resizeObs.disconnect();
@@ -320,7 +338,8 @@ export class Viewer {
     if (!p || document.hidden) return;
     const now = performance.now();
     const raw = (now - this.last) / 1000;
-    const dt = Math.min(raw, 0.1);
+    // 一時停止中も描画は続ける（カメラ操作を反映するため）。時間だけを止める
+    const dt = this.paused ? 0 : Math.min(raw, 0.1);
     this.last = now;
     this.time += dt;
     p.render({ time: this.time, dt, frame: this.frame++ }, true);
@@ -359,27 +378,83 @@ export class Viewer {
     }
   }
 
+  private sendWheel(delta: number): void {
+    const p = this.pipeline;
+    if (!p) return;
+    for (const s of [p.source, ...p.posts]) {
+      const inst = s?.instance as { wheel?: (d: number) => void } | null | undefined;
+      inst?.wheel?.(delta);
+    }
+  }
+
   private bindPointer(): void {
+    const canvas = this.canvas;
     const send = (e: PointerEvent, down: boolean) => {
       const p = this.pipeline;
       if (!p) return;
-      const r = this.canvas.getBoundingClientRect();
+      const r = canvas.getBoundingClientRect();
       const x = (e.clientX - r.left) / r.width;
       const y = 1 - (e.clientY - r.top) / r.height;
       for (const s of [p.source, ...p.posts]) s?.instance?.pointer?.(x, y, down);
     };
-    this.canvas.addEventListener('pointerdown', (e) => {
+    const pinch = () => {
+      const [a, b] = [...this.touches.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+    canvas.addEventListener('pointerdown', (e) => {
+      this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      canvas.setPointerCapture(e.pointerId);
+      if (this.touches.size === 2) {
+        // 2本指はピンチズーム。回転のドラッグは一旦離す
+        this.pinchDist = pinch();
+        this.pointerDown = false;
+        send(e, false);
+        return;
+      }
+      if (this.touches.size > 2) return;
       this.pointerDown = true;
-      this.canvas.setPointerCapture(e.pointerId);
       send(e, true);
     });
-    this.canvas.addEventListener('pointermove', (e) => send(e, this.pointerDown));
+    canvas.addEventListener('pointermove', (e) => {
+      if (this.touches.has(e.pointerId)) this.touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (this.touches.size >= 2) {
+        const d = pinch();
+        if (this.pinchDist > 0 && d > 0) this.sendWheel(-(d - this.pinchDist) * 4);
+        this.pinchDist = d;
+        return;
+      }
+      send(e, this.pointerDown);
+    });
     const up = (e: PointerEvent) => {
+      this.touches.delete(e.pointerId);
+      if (this.touches.size >= 1) {
+        this.pinchDist = 0;
+        return;
+      }
       this.pointerDown = false;
       send(e, false);
     };
-    this.canvas.addEventListener('pointerup', up);
-    this.canvas.addEventListener('pointercancel', up);
+    canvas.addEventListener('pointerup', up);
+    canvas.addEventListener('pointercancel', up);
+    canvas.addEventListener(
+      'wheel',
+      (e) => {
+        if (!this.pipeline) return;
+        e.preventDefault();
+        this.sendWheel(e.deltaMode === 1 ? e.deltaY * 30 : e.deltaY);
+      },
+      { passive: false },
+    );
+  }
+
+  private setPaused(on: boolean): void {
+    this.paused = on;
+    this.updatePauseBtn();
+  }
+
+  private updatePauseBtn(): void {
+    this.pauseBtn.textContent = this.paused ? '▶ 再生' : '⏸ 停止';
+    this.pauseBtn.classList.toggle('active', this.paused);
   }
 
   private onKey(e: KeyboardEvent): void {
@@ -392,10 +467,15 @@ export class Viewer {
     else if (e.key === 'r' || e.key === 'R') this.randomEffect();
     else if (e.key === 'f' || e.key === 'F') this.toggleFullscreen();
     else if (e.key === 'p' || e.key === 'P') this.root.classList.toggle('panel-hidden');
+    else if (e.key === ' ') {
+      e.preventDefault();
+      this.setPaused(!this.paused);
+    }
   }
 
   private step(dir: number): void {
-    const list = PLAYABLE;
+    const main = getLibraryEntry(this.focusId)?.mainCategory;
+    const list = PLAYABLE.filter((e) => !main || e.mainCategory === main);
     const i = list.findIndex((e) => e.id === this.focusId);
     const next = list[(i + dir + list.length) % list.length];
     this.onNavigate(next.id);
@@ -456,15 +536,15 @@ export class Viewer {
   }
 
   private renderTitle(): void {
-    const e = getEntry(this.focusId);
+    const e = getLibraryEntry(this.focusId);
     const status = availability(this.focusId);
     this.title.innerHTML = '';
     if (e) {
       this.title.append(
         h('span', { class: 'num', text: e.id }),
-        h('span', { class: 'name', text: e.name }),
+        h('span', { class: 'name', text: e.nameJa }),
         h('span', { class: `badge status-${status}`, text: AVAILABILITY_LABELS[status] }),
-        h('span', { class: 'cat', style: `--cat:${e.category.color}`, text: e.category.name }),
+        h('span', { class: 'cat', style: `--cat:${e.subcategory.color}`, text: `${e.mainCategory === 'visual' ? '' : e.subcategory.code + ' '}${e.subcategory.name}` }),
       );
     }
     const fav = favoritesStore.has(this.focusId);
@@ -491,8 +571,7 @@ export class Viewer {
 
   private stageBlock(stage: Stage, kind: 'source' | 'post'): HTMLElement {
     const p = this.pipeline!;
-    const e = getEntry(stage.module.id);
-    const name = stage.module.id === 'demo' ? 'デモシーン（Three.js）' : `${stage.module.id} ${e?.name ?? ''}`;
+    const name = stage.module.id === 'demo' ? 'デモシーン（Three.js）' : `${stage.module.id} ${nameOf(stage.module.id)}`;
     const head = h('div', { class: 'stage-head' }, h('span', { class: 'stage-name', text: name }));
     if (kind === 'post') {
       const enabled = h('input', { type: 'checkbox', title: '有効／無効' });
@@ -528,6 +607,7 @@ export class Viewer {
         ),
       );
     }
+    if (kind === 'source') block.append(...this.actionControls(stage));
     block.append(buildParamControls(stage.module.params, stage.params));
     return block;
   }
@@ -542,8 +622,19 @@ export class Viewer {
     // ソース選択
     const srcSelect = h('select', { 'aria-label': '入力ソース' });
     srcSelect.append(h('option', { value: 'demo', text: 'デモシーン（Three.js）' }));
-    for (const r of REGISTRY.filter((r) => r.kind === 'source')) {
-      srcSelect.append(h('option', { value: r.id, text: `${r.id} ${getEntry(r.id)?.name ?? ''}` }));
+    // 既存の演出と、GEOMETRY / MOTION / WORLD の実験場（どれもポストを重ねられる）
+    const groups: [string, (id: string) => boolean][] = [
+      ['VISUAL EFFECT', (id) => /^\d{3}$/.test(id)],
+      ['GEOMETRY', (id) => id.startsWith('GEO-')],
+      ['MOTION', (id) => id.startsWith('MOT-')],
+      ['WORLD GENERATION', (id) => id.startsWith('WRD-')],
+    ];
+    for (const [label, test] of groups) {
+      const items = ALL_REGISTRY.filter((r) => r.kind === 'source' && test(r.id));
+      if (!items.length) continue;
+      const og = h('optgroup', { label });
+      for (const r of items) og.append(h('option', { value: r.id, text: `${r.id} ${nameOf(r.id)}` }));
+      srcSelect.append(og);
     }
     srcSelect.value = p.source?.module.id ?? 'demo';
     srcSelect.addEventListener('change', async () => {
@@ -562,7 +653,7 @@ export class Viewer {
     const addSelect = h('select', { 'aria-label': 'ポストエフェクトを追加' });
     addSelect.append(h('option', { value: '', text: '＋ ポストエフェクトを追加…' }));
     for (const r of REGISTRY.filter((r) => r.kind === 'post')) {
-      addSelect.append(h('option', { value: r.id, text: `${r.id} ${getEntry(r.id)?.name ?? ''}` }));
+      addSelect.append(h('option', { value: r.id, text: `${r.id} ${nameOf(r.id)}` }));
     }
     addSelect.addEventListener('change', async () => {
       const id = addSelect.value;
@@ -634,7 +725,7 @@ export class Viewer {
           text: '保存',
           onclick: () => {
             const cfg = this.exportConfig();
-            const name = presetName.value.trim() || `${getEntry(this.focusId)?.name ?? 'preset'} ${new Date().toLocaleTimeString()}`;
+            const name = presetName.value.trim() || `${nameOf(this.focusId) || 'preset'} ${new Date().toLocaleTimeString()}`;
             if (!cfg) return;
             presetStore.save(name, cfg);
             presetName.value = '';
@@ -671,7 +762,9 @@ export class Viewer {
   }
 
   private renderInfoTab(): HTMLElement {
-    const e = getEntry(this.focusId);
+    const le = getLibraryEntry(this.focusId);
+    if (le && !le.legacy) return this.renderLabInfo(le);
+    const e = le?.legacy;
     const root = h('div', { class: 'info-tab' });
     if (!e) return root;
     const status = availability(e.id);
@@ -711,6 +804,116 @@ export class Viewer {
         }),
       );
     }
+    return root;
+  }
+
+  /** 操作ボタン（再生成・リセット等）と GLB 書き出し */
+  private actionControls(stage: Stage): HTMLElement[] {
+    const mod = stage.module;
+    const inst = stage.instance as import('../engine/types').SourceInstance | null;
+    const out: HTMLElement[] = [];
+    const buttons: HTMLElement[] = [];
+    for (const a of mod.actions ?? []) {
+      buttons.push(
+        h('button', {
+          class: 'btn action-btn',
+          text: a.label,
+          title: a.title ?? a.label,
+          'data-action': a.key,
+          onclick: () => {
+            const patch = inst?.action?.(a.key, stage.params);
+            if (patch) Object.assign(stage.params, patch);
+            if (patch) this.renderPanel();
+          },
+        }),
+      );
+    }
+    if (inst?.exportObject || inst?.exportUnavailableReason) {
+      buttons.push(
+        h('button', {
+          class: 'btn action-btn',
+          text: '⬇ GLB書き出し',
+          title: 'glTF バイナリ（.glb）として保存',
+          'data-action': 'export-glb',
+          onclick: () => void this.exportGlb(stage),
+        }),
+      );
+    }
+    if (buttons.length) out.push(h('div', { class: 'row action-row' }, ...buttons));
+    if (mod.interaction === 'orbit') out.push(h('p', { class: 'hint small', text: 'ドラッグで回転、ホイール／ピンチでズーム。' }));
+    else if (mod.interaction === 'pan-zoom') out.push(h('p', { class: 'hint small', text: 'ホイール／ピンチでズーム。クリック・ドラッグで操作できます。' }));
+    return out;
+  }
+
+  private async exportGlb(stage: Stage): Promise<void> {
+    const inst = stage.instance as import('../engine/types').SourceInstance | null;
+    const reason = inst?.exportUnavailableReason?.() ?? null;
+    const obj = reason ? null : (inst?.exportObject?.() ?? null);
+    if (!obj) {
+      toast(reason ?? 'この状態では書き出せる形状がありません');
+      return;
+    }
+    try {
+      const { GLTFExporter } = await import('three/examples/jsm/exporters/GLTFExporter.js');
+      const result = await new GLTFExporter().parseAsync(obj, { binary: true, onlyVisible: true });
+      const blob = new Blob([result as ArrayBuffer], { type: 'model/gltf-binary' });
+      const url = URL.createObjectURL(blob);
+      const a = h('a', { href: url, download: `${stage.module.id}.glb` });
+      document.body.append(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      toast(`${stage.module.id}.glb を書き出しました`);
+    } catch (e) {
+      toast(`書き出しに失敗しました: ${e instanceof Error ? e.message : e}`);
+    }
+  }
+
+  /** GEOMETRY / MOTION / WORLD の解説（原理・実装・参考資料・関連） */
+  private renderLabInfo(e: LibraryEntry): HTMLElement {
+    const status = availability(e.id);
+    const mod = this.modules.get(e.id);
+    const main = mainCategoryInfoOf(e.mainCategory);
+    const relLink = (id: string) => {
+      const r = getLibraryEntry(id);
+      return h('li', {}, h('button', { class: 'link', text: `${id} ${r?.nameJa ?? ''}`, onclick: () => this.onNavigate(id) }), r ? h('span', { class: `badge status-${availability(id)}`, text: AVAILABILITY_LABELS[availability(id)] }) : null);
+    };
+    const root = h(
+      'div',
+      { class: 'info-tab' },
+      h('p', { class: 'small muted', text: `${main.label} › ${e.subcategory.code} ${e.subcategory.name} · ${e.nameEn}` }),
+      h('p', { class: 'lead', text: e.description }),
+      h('h3', { text: '原理' }),
+      h('p', { text: e.principle }),
+      h('h3', { text: 'このライブラリでの実装' }),
+      h('p', { text: e.implementation }),
+    );
+    if (mod?.notes) root.append(h('h3', { text: '実装メモ（デモ）' }), h('p', { text: mod.notes }));
+    root.append(
+      h('h3', { text: '主なパラメーター' }),
+      h('ul', { class: 'tech-list' }, ...e.parameters.map((t) => h('li', { text: t }))),
+      h('h3', { text: '参考資料' }),
+      h(
+        'ul',
+        { class: 'ref-list' },
+        ...e.referenceUrls.map((r) =>
+          h('li', {}, h('a', { href: r.url, target: '_blank', rel: 'noopener noreferrer', text: r.label }), h('span', { class: 'small muted', text: ` — ${r.license}` })),
+        ),
+      ),
+      h('p', { class: 'small muted', text: 'コードの複製はしていません（ライセンス表記は参考資料自体のもの）。' }),
+    );
+    if (e.relatedIds.length) root.append(h('h3', { text: '関連技術' }), h('ul', { class: 'rel-list' }, ...e.relatedIds.map(relLink)));
+    root.append(
+      h('h3', { text: '実装状況' }),
+      h(
+        'p',
+        {},
+        h('span', { class: `badge status-${status}`, text: AVAILABILITY_LABELS[status] }),
+        ` 負荷: ${PERF_LABELS[e.performanceClass]} · モバイル: ${MOBILE_LABELS[e.mobileCompatibility]} · 更新: ${e.updatedAt}`,
+      ),
+      h('div', { class: 'tags' }, ...e.tags.map((t) => h('span', { class: 'tag', text: t }))),
+    );
+    if (status === 'planned') root.append(h('p', { class: 'muted', text: 'デモは未実装です。原理と実装方針のみ登録しています。' }));
     return root;
   }
 

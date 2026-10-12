@@ -1,0 +1,1988 @@
+{
+  "checkedAt": "2026-10-11T15:18:22.835Z",
+  "total": 243,
+  "reachable": 239,
+  "rows": [
+    {
+      "url": "http://algorithmicbotany.org/papers/#abop",
+      "ids": [
+        "WRD-023"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "http://www-cs-students.stanford.edu/~amitp/game-programming/polygon-map-generation/",
+      "ids": [
+        "WRD-008"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://0fps.net/2012/07/12/smooth-voxel-terrain-part-2/",
+      "ids": [
+        "GEO-042",
+        "WRD-007"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://ccl.northwestern.edu/netlogo/models/WolfSheepPredation",
+      "ids": [
+        "WRD-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://developer.nvidia.com/gpugems/gpugems/part-i-natural-effects/chapter-7-rendering-countless-blades-waving-grass",
+      "ids": [
+        "WRD-026"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1002/9780470725160",
+      "ids": [
+        "WRD-027"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1002/nav.3800020109",
+      "ids": [
+        "MOT-040"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1007/3-540-44818-7_14",
+      "ids": [
+        "WRD-024"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1007/s003710050084",
+      "ids": [
+        "GEO-041"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/0010-4485(78)90110-0",
+      "ids": [
+        "GEO-020"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/j.cageo.2013.04.024",
+      "ids": [
+        "WRD-005"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/j.geomorph.2012.10.008",
+      "ids": [
+        "WRD-045"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/j.gmod.2011.05.003",
+      "ids": [
+        "MOT-023"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/j.jvcir.2007.01.005",
+      "ids": [
+        "MOT-029"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/S0167-8396(03)00002-5",
+      "ids": [
+        "GEO-026"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1016/S0734-189X(84)80011-0",
+      "ids": [
+        "WRD-005"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1038/40353",
+      "ids": [
+        "WRD-048"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1051/jp1:1992277",
+      "ids": [
+        "MOT-039"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1063/1.1751381",
+      "ids": [
+        "GEO-047"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1068/a210041",
+      "ids": [
+        "WRD-017"
+      ],
+      "status": 404,
+      "ok": false
+    },
+    {
+      "url": "https://doi.org/10.1068/a251175",
+      "ids": [
+        "WRD-041",
+        "WRD-042"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1080/0022250X.1971.9989794",
+      "ids": [
+        "WRD-046"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1103/PhysRevE.51.4282",
+      "ids": [
+        "MOT-035",
+        "MOT-037"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1103/PhysRevLett.69.1629",
+      "ids": [
+        "WRD-047"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1109/70.86079",
+      "ids": [
+        "MOT-022"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1109/ICNN.1995.488968",
+      "ids": [
+        "MOT-038"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1109/MCG.1981.1673799",
+      "ids": [
+        "GEO-005"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1109/PG.2007.15",
+      "ids": [
+        "WRD-049"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1109/ROBOT.2008.4543489",
+      "ids": [
+        "MOT-032"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1109/TSSC.1968.300136",
+      "ids": [
+        "MOT-018"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1111/j.1467-8659.2012.03018.x",
+      "ids": [
+        "WRD-013"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/1141911.1141931",
+      "ids": [
+        "WRD-016"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/1278780.1278807",
+      "ids": [
+        "WRD-021"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/1330511.1330513",
+      "ids": [
+        "GEO-030",
+        "GEO-032"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/15886.15903",
+      "ids": [
+        "GEO-024"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/218380.218427",
+      "ids": [
+        "WRD-022"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/218380.218473",
+      "ids": [
+        "GEO-029"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/235815.235821",
+      "ids": [
+        "GEO-037"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/258734.258849",
+      "ids": [
+        "GEO-036"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/3102071.3110566",
+      "ids": [
+        "WRD-031"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/325165.325242",
+      "ids": [
+        "MOT-001"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/325165.325247",
+      "ids": [
+        "WRD-001"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/358523.358553",
+      "ids": [
+        "WRD-002"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/37402.37422",
+      "ids": [
+        "GEO-038"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/383259.383292",
+      "ids": [
+        "WRD-011",
+        "WRD-012"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/566654.566605",
+      "ids": [
+        "MOT-046"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/74334.74337",
+      "ids": [
+        "WRD-004"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/882262.882324",
+      "ids": [
+        "WRD-016"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1145/964965.808573",
+      "ids": [
+        "GEO-021",
+        "GEO-022",
+        "GEO-023"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.1177/027836498600500106",
+      "ids": [
+        "MOT-034"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.20380/GI2002.08",
+      "ids": [
+        "WRD-028"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.3402/tellusb.v35i4.14616",
+      "ids": [
+        "WRD-043"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://doi.org/10.3732/ajb.90.3.333",
+      "ids": [
+        "GEO-044"
+      ],
+      "status": 302,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/24-cell",
+      "ids": [
+        "GEO-049"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Angle_of_repose",
+      "ids": [
+        "WRD-004"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Antiprism",
+      "ids": [
+        "GEO-009"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Arc_length",
+      "ids": [
+        "MOT-011",
+        "MOT-036"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Archimedean_solid",
+      "ids": [
+        "GEO-002"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Associated_Legendre_polynomials",
+      "ids": [
+        "GEO-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/B-spline",
+      "ids": [
+        "GEO-013"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/B%C3%A9zier_curve",
+      "ids": [
+        "GEO-011"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/B%C3%A9zier_surface",
+      "ids": [
+        "GEO-015"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Barycentric_coordinate_system",
+      "ids": [
+        "GEO-026"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Betweenness_centrality",
+      "ids": [
+        "WRD-020"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Bid_rent_theory",
+      "ids": [
+        "WRD-018"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Binary_space_partitioning",
+      "ids": [
+        "WRD-012",
+        "WRD-032"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Biome",
+      "ids": [
+        "WRD-009"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm",
+      "ids": [
+        "GEO-039"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Boy%27s_surface",
+      "ids": [
+        "GEO-018"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Braid_(video_game)",
+      "ids": [
+        "MOT-048"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Breadth-first_search",
+      "ids": [
+        "WRD-039"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Bullet_time",
+      "ids": [
+        "MOT-045"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Catenoid",
+      "ids": [
+        "GEO-017"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Catmull%E2%80%93Clark_subdivision_surface",
+      "ids": [
+        "GEO-020"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Centripetal_Catmull%E2%80%93Rom_spline",
+      "ids": [
+        "GEO-012"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Circular_buffer",
+      "ids": [
+        "MOT-042"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Climax_community",
+      "ids": [
+        "WRD-025"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Constructive_solid_geometry",
+      "ids": [
+        "GEO-034"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Conway_polyhedron_notation",
+      "ids": [
+        "GEO-007"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Cube_mapping",
+      "ids": [
+        "GEO-028"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Cubic_Hermite_spline",
+      "ids": [
+        "MOT-010"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Daisyworld",
+      "ids": [
+        "WRD-043"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Damping",
+      "ids": [
+        "MOT-003",
+        "MOT-006",
+        "MOT-009"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/De_Boor%27s_algorithm",
+      "ids": [
+        "GEO-013"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/De_Casteljau%27s_algorithm",
+      "ids": [
+        "GEO-011"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Delaunay_triangulation",
+      "ids": [
+        "GEO-039",
+        "WRD-035"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Desire_path",
+      "ids": [
+        "WRD-048"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Diamond-square_algorithm",
+      "ids": [
+        "WRD-002"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Diffusion-limited_aggregation",
+      "ids": [
+        "WRD-017",
+        "WRD-044"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Digital_delay_line",
+      "ids": [
+        "MOT-042"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Displacement_mapping",
+      "ids": [
+        "GEO-027"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Distance_transform",
+      "ids": [
+        "WRD-029"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Dual_polyhedron",
+      "ids": [
+        "GEO-001"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Dubins_path",
+      "ids": [
+        "MOT-014"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Ecological_niche",
+      "ids": [
+        "WRD-024"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Ecological_succession",
+      "ids": [
+        "WRD-025"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Enneper_surface",
+      "ids": [
+        "GEO-017"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Exponential_decay",
+      "ids": [
+        "MOT-004"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Facade",
+      "ids": [
+        "WRD-015"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Floor_area_ratio",
+      "ids": [
+        "WRD-014"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Forest-fire_model",
+      "ids": [
+        "WRD-047"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Formation_flying",
+      "ids": [
+        "MOT-031"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Forward_kinematics",
+      "ids": [
+        "MOT-021"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Fractal_canopy",
+      "ids": [
+        "WRD-022"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Fractional_Brownian_motion",
+      "ids": [
+        "WRD-001"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Free-form_deformation",
+      "ids": [
+        "GEO-024"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Frenet%E2%80%93Serret_formulas",
+      "ids": [
+        "GEO-032"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Friction",
+      "ids": [
+        "MOT-005"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Gait",
+      "ids": [
+        "MOT-025"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Game_feel",
+      "ids": [
+        "MOT-047"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Geodesic_polyhedron",
+      "ids": [
+        "GEO-006"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Ghost_(video_games)",
+      "ids": [
+        "MOT-041"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Golden_angle",
+      "ids": [
+        "GEO-048"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Growing_degree-day",
+      "ids": [
+        "WRD-030"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Gyroid",
+      "ids": [
+        "GEO-042"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Harmonic_oscillator",
+      "ids": [
+        "MOT-003"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Hilbert_curve",
+      "ids": [
+        "GEO-047"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Hooke%27s_law",
+      "ids": [
+        "MOT-030"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Hungarian_algorithm",
+      "ids": [
+        "MOT-040"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Inbetweening",
+      "ids": [
+        "MOT-002"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Inertia",
+      "ids": [
+        "MOT-005"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Inverse_kinematics",
+      "ids": [
+        "MOT-022",
+        "MOT-024",
+        "MOT-026",
+        "MOT-027"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Inverted_pendulum",
+      "ids": [
+        "MOT-028"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Isosurface",
+      "ids": [
+        "WRD-007"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Kepler_orbit",
+      "ids": [
+        "MOT-019"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Kepler%27s_laws_of_planetary_motion",
+      "ids": [
+        "MOT-019"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Kepler%E2%80%93Poinsot_polyhedron",
+      "ids": [
+        "GEO-003"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Key_frame",
+      "ids": [
+        "MOT-010"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Klein_bottle",
+      "ids": [
+        "GEO-018"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Kruskal%27s_algorithm",
+      "ids": [
+        "WRD-034"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/L-system",
+      "ids": [
+        "WRD-023"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Land_use",
+      "ids": [
+        "WRD-042"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Laplacian_smoothing",
+      "ids": [
+        "GEO-029"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Law_of_cosines",
+      "ids": [
+        "MOT-024"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Linear_time-invariant_system",
+      "ids": [
+        "MOT-009"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Lissajous_curve",
+      "ids": [
+        "MOT-007"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Loft_(3D)",
+      "ids": [
+        "GEO-033"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations",
+      "ids": [
+        "WRD-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/M%C3%B6bius_strip",
+      "ids": [
+        "GEO-018"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Maze_generation_algorithm",
+      "ids": [
+        "WRD-033"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Mechanical_metamaterial",
+      "ids": [
+        "GEO-045"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Menger_sponge",
+      "ids": [
+        "GEO-046"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Minimal_surface",
+      "ids": [
+        "GEO-017"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Minimum_bounding_box",
+      "ids": [
+        "WRD-038"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Motion_planning",
+      "ids": [
+        "MOT-044"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Newton%27s_method",
+      "ids": [
+        "MOT-008"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline",
+      "ids": [
+        "GEO-014",
+        "GEO-016"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Parametric_design",
+      "ids": [
+        "WRD-015"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Phase_portrait",
+      "ids": [
+        "MOT-006"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Phase_velocity",
+      "ids": [
+        "MOT-043"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Phenology",
+      "ids": [
+        "WRD-030"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Phyllotaxis",
+      "ids": [
+        "GEO-048"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Plate_tectonics",
+      "ids": [
+        "WRD-010"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Platonic_solid",
+      "ids": [
+        "GEO-001"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Point_process",
+      "ids": [
+        "WRD-027"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Polygon_mesh",
+      "ids": [
+        "GEO-035"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Polygon_triangulation",
+      "ids": [
+        "GEO-031"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Polygonal_modeling",
+      "ids": [
+        "GEO-040"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Power_diagram",
+      "ids": [
+        "GEO-043"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Prim%27s_algorithm",
+      "ids": [
+        "WRD-034"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Prism_(geometry)",
+      "ids": [
+        "GEO-009"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Procedural_animation",
+      "ids": [
+        "MOT-025"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Procedural_generation",
+      "ids": [
+        "WRD-038"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Procedural_modeling",
+      "ids": [
+        "GEO-008"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Proportional_navigation",
+      "ids": [
+        "MOT-013"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Proportional%E2%80%93integral%E2%80%93derivative_controller",
+      "ids": [
+        "MOT-028"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Pursuit_curve",
+      "ids": [
+        "MOT-012"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Random_walk",
+      "ids": [
+        "MOT-020",
+        "WRD-037"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Riparian_zone",
+      "ids": [
+        "WRD-029"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Road_hierarchy",
+      "ids": [
+        "WRD-020"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods",
+      "ids": [
+        "MOT-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Saccade",
+      "ids": [
+        "MOT-027"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Scalar_potential",
+      "ids": [
+        "MOT-034"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Schelling%27s_model_of_segregation",
+      "ids": [
+        "WRD-046"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Self-organization",
+      "ids": [
+        "MOT-037"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Self-thinning",
+      "ids": [
+        "WRD-028"
+      ],
+      "status": 404,
+      "ok": false
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Setback_(land_use)",
+      "ids": [
+        "WRD-014"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Shear_mapping",
+      "ids": [
+        "GEO-025"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Sierpi%C5%84ski_triangle",
+      "ids": [
+        "GEO-046"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Signed_distance_function",
+      "ids": [
+        "GEO-041"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Slerp",
+      "ids": [
+        "MOT-001"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Snake_(video_game_genre)",
+      "ids": [
+        "MOT-036"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Solid_of_revolution",
+      "ids": [
+        "GEO-019"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Space_frame",
+      "ids": [
+        "GEO-045"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Spherical_harmonics",
+      "ids": [
+        "GEO-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Stellation",
+      "ids": [
+        "GEO-003"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Stream_power",
+      "ids": [
+        "WRD-045"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Superellipsoid",
+      "ids": [
+        "GEO-005"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Superformula",
+      "ids": [
+        "GEO-044"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Symplectic_integrator",
+      "ids": [
+        "MOT-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Tesseract",
+      "ids": [
+        "GEO-049"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Time_dilation",
+      "ids": [
+        "MOT-045"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Torus_knot",
+      "ids": [
+        "GEO-004"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Trapezoidal_rule",
+      "ids": [
+        "MOT-044"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Triply_periodic_minimal_surface",
+      "ids": [
+        "GEO-042"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Truncation_(geometry)",
+      "ids": [
+        "GEO-002"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Urban_density",
+      "ids": [
+        "WRD-018"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Urban_sprawl",
+      "ids": [
+        "WRD-041"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Verlet_integration",
+      "ids": [
+        "MOT-029",
+        "MOT-050"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Voronoi_diagram",
+      "ids": [
+        "GEO-043",
+        "WRD-010",
+        "WRD-019"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Water_cycle",
+      "ids": [
+        "WRD-049"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Wave_(audience)",
+      "ids": [
+        "MOT-043"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://en.wikipedia.org/wiki/Zonohedron",
+      "ids": [
+        "GEO-010"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://gafferongames.com/post/fix_your_timestep/",
+      "ids": [
+        "MOT-004",
+        "MOT-047",
+        "MOT-048",
+        "MOT-049"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://gamma.cs.unc.edu/RVO2/",
+      "ids": [
+        "MOT-032"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/evanw/csg.js",
+      "ids": [
+        "GEO-034"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/gkjohnson/three-bvh-csg",
+      "ids": [
+        "GEO-034"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mapbox/delaunator",
+      "ids": [
+        "GEO-039"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/curves/NURBSCurve.js",
+      "ids": [
+        "GEO-014"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/curves/NURBSSurface.js",
+      "ids": [
+        "GEO-016"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/geometries/ConvexGeometry.js",
+      "ids": [
+        "GEO-010"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/math/ConvexHull.js",
+      "ids": [
+        "GEO-037"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/modifiers/CurveModifier.js",
+      "ids": [
+        "GEO-030"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/modifiers/SimplifyModifier.js",
+      "ids": [
+        "GEO-036"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/objects/MarchingCubes.js",
+      "ids": [
+        "GEO-038"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/examples/jsm/utils/BufferGeometryUtils.js",
+      "ids": [
+        "GEO-008"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mrdoob/three.js/blob/dev/src/extras/core/Curve.js",
+      "ids": [
+        "MOT-011"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/mxgmn/WaveFunctionCollapse",
+      "ids": [
+        "WRD-031"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/SebLague/Hydraulic-Erosion",
+      "ids": [
+        "WRD-003"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://github.com/vrm-c/vrm-specification",
+      "ids": [
+        "MOT-030"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/extras/curves/CatmullRomCurve3",
+      "ids": [
+        "GEO-012"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/extras/ShapeUtils",
+      "ids": [
+        "GEO-035"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/geometries/ExtrudeGeometry",
+      "ids": [
+        "GEO-031"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/geometries/IcosahedronGeometry",
+      "ids": [
+        "GEO-006"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/geometries/LatheGeometry",
+      "ids": [
+        "GEO-019"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/geometries/TorusKnotGeometry",
+      "ids": [
+        "GEO-004"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/materials/MeshStandardMaterial",
+      "ids": [
+        "GEO-027"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://threejs.org/docs/#api/en/math/Matrix4",
+      "ids": [
+        "GEO-025"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://watabou.itch.io/medieval-fantasy-city-generator",
+      "ids": [
+        "WRD-019"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://weblog.jamisbuck.org/2011/2/7/maze-generation-algorithm-recap",
+      "ids": [
+        "WRD-033",
+        "WRD-034",
+        "WRD-039"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.citygen.net/",
+      "ids": [
+        "WRD-011"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf",
+      "ids": [
+        "WRD-003"
+      ],
+      "status": 503,
+      "ok": false
+    },
+    {
+      "url": "https://www.gamedeveloper.com/programming/procedural-dungeon-generation-algorithm",
+      "ids": [
+        "WRD-035"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.georgehart.com/virtual-polyhedra/conway_notation.html",
+      "ids": [
+        "GEO-007"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.red3d.com/cwr/steer/gdc99/",
+      "ids": [
+        "MOT-012",
+        "MOT-014",
+        "MOT-015",
+        "MOT-016",
+        "MOT-017",
+        "MOT-020",
+        "MOT-031",
+        "MOT-033"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.redblobgames.com/maps/terrain-from-noise/",
+      "ids": [
+        "WRD-001",
+        "WRD-006",
+        "WRD-008",
+        "WRD-009"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.redblobgames.com/pathfinding/a-star/introduction.html",
+      "ids": [
+        "MOT-018"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.roguebasin.com/index.php/Basic_BSP_Dungeon_generation",
+      "ids": [
+        "WRD-032",
+        "WRD-040"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.roguebasin.com/index.php/Cellular_Automata_Method_for_Generating_Random_Cave-Like_Levels",
+      "ids": [
+        "WRD-036"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.roguebasin.com/index.php/Random_Walk_Cave_Generation",
+      "ids": [
+        "WRD-037"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.sciencedirect.com/book/9781558608481/texturing-and-modeling",
+      "ids": [
+        "WRD-006"
+      ],
+      "status": 403,
+      "ok": false
+    },
+    {
+      "url": "https://www.w3.org/TR/css-easing-1/",
+      "ids": [
+        "MOT-002"
+      ],
+      "status": 200,
+      "ok": true
+    },
+    {
+      "url": "https://www.w3.org/TR/css-easing-1/#cubic-bezier-easing-functions",
+      "ids": [
+        "MOT-008"
+      ],
+      "status": 200,
+      "ok": true
+    }
+  ]
+}

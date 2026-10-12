@@ -1,6 +1,7 @@
 import './styles/main.css';
-import { BASE_CATALOG, CATALOG, EXTENSION_CATALOG } from './data/catalog';
-import { REGISTRY, availability } from './effects/registry';
+import { BASE_CATALOG, EXTENSION_CATALOG } from './data/catalog';
+import { availability } from './effects/registry';
+import { LIBRARY, MAIN_CATEGORIES, libraryStats } from './data/library';
 import { CatalogView } from './ui/catalogView';
 import { PreviewManager } from './ui/previewManager';
 import { Viewer } from './ui/viewer';
@@ -41,8 +42,8 @@ function boot(): void {
   );
   const catalog = new CatalogView(previews, navigate);
 
-  const implemented = REGISTRY.filter((r) => r.status === 'implemented').length;
-  const experimental = REGISTRY.filter((r) => r.status === 'experimental').length;
+  const stats = libraryStats();
+  const perMain = MAIN_CATEGORIES.map((m) => `${m.label} ${LIBRARY.filter((e) => e.mainCategory === m.id).length}`).join(' / ');
 
   const qualityBtn = h('button', { class: 'tool-btn', title: '描画品質（iPadでは「軽量」推奨）' });
   const renderQuality = () => (qualityBtn.textContent = quality === 'high' ? '品質: 高' : '品質: 軽量');
@@ -73,10 +74,10 @@ function boot(): void {
     h(
       'div',
       { class: 'brand' },
-      h('h1', {}, 'VISUAL EFFECT LIBRARY ', h('span', { class: 'accent', text: '200' })),
+      h('h1', {}, 'VISUAL EFFECT LIBRARY ', h('span', { class: 'accent', text: String(stats.total) })),
       h('p', {
         class: 'stats',
-        text: `基本${BASE_CATALOG.length}種＋拡張${EXTENSION_CATALOG.length}種 · 実装済み ${implemented} · 実験中 ${experimental} · 未実装 ${CATALOG.length - implemented - experimental}`,
+        text: `${perMain}（VISUAL＝基本${BASE_CATALOG.length}＋拡張${EXTENSION_CATALOG.length}） · 実装済み ${stats.implemented} · 実験中 ${stats.experimental} · 未実装 ${stats.planned}`,
       }),
     ),
     h(
@@ -86,7 +87,7 @@ function boot(): void {
         class: 'tool-btn primary',
         text: '🎲 ランダム再生',
         onclick: () => {
-          const list = CATALOG.filter((e) => availability(e.id) !== 'planned');
+          const list = LIBRARY.filter((e) => availability(e.id) !== 'planned');
           navigate(list[Math.floor(Math.random() * list.length)].id);
           viewer.startAutoplay();
         },
@@ -100,14 +101,14 @@ function boot(): void {
     'footer',
     { class: 'app-footer' },
     h('p', {
-      text: '全演出は Three.js（MIT License）上の独自実装です。クリックで全画面・パラメータ調整・組み合わせ・JSON書き出し・移植コード表示。',
+      text: '全項目は Three.js（MIT License）上の独自実装です。クリックで全画面・パラメータ調整・組み合わせ・JSON／GLB書き出し・移植コード表示。参考資料のコードは複製していません。',
     }),
   );
   app.append(header, catalog.root, footer);
 
   const route = () => {
     const hash = location.hash;
-    const fx = hash.match(/^#\/fx\/(\d{3})/);
+    const fx = hash.match(/^#\/fx\/([A-Z]{3}-\d{3}|\d{3})/);
     const selftest = hash.startsWith('#/selftest');
     if (fx) {
       previews.setPaused(true);
