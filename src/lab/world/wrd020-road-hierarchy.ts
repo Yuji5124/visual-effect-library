@@ -135,7 +135,7 @@ export default defineWorldDemo({
         const cx = pts.reduce((a, b) => a + b[0], 0) / 4, cz = pts.reduce((a, b) => a + b[1], 0) / 4;
         const shrink = (k: number) => pts.map(([x, z]) => [cx + (x - cx) * k, cz + (z - cz) * k] as V2);
         if (!q.every((v) => alive[v])) {
-          if (q.some((v) => !alive[v])) water.push({ pts: pts, base: -0.02, height: 0.02, color: 0x2b5f9a });
+          if (q.some((v) => !alive[v])) water.push({ pts: pts, base: 0, height: 0.012, color: 0x2b5f9a });
           continue;
         }
         blocks.push({ pts: shrink(0.8), base: 0, height: 0.03, color: 0x8d8a7c, side: 0x6f6c60 });

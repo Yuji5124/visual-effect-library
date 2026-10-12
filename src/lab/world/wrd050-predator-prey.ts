@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { defineWorldDemo } from '../framework/sceneLab';
 import { N8, Ticker } from '../framework/worldKit';
-import { ColumnField, TimeChart, XYTrace } from '../framework/caKit';
-import { AgentDots, chartSlot } from '../framework/dynKit';
+import { ColumnField, TimeChart } from '../framework/caKit';
+import { AgentDots, PhaseTrace, chartSlot } from '../framework/dynKit';
 
 const SHEEP_CAP = 6000, WOLF_CAP = 2500;
 const SHEEP_GAIN = 4, WOLF_GAIN = 20;
@@ -42,7 +42,7 @@ class Herd {
 /** WRD-050 空間的な捕食者・被食者：草（再生カウンタ）＋草食・肉食エージェント（エネルギー・繁殖・死亡） */
 export default defineWorldDemo({
   id: 'WRD-050',
-  notes: '草はセルごとに「生えている／再生待ち」で、食べられると再生速度に応じた時間で戻る。羊（白）と狼（赤）は毎ステップ8近傍へ動いて1のエネルギーを使い、羊は草を食べて +4、狼は同じセルの羊を食べて +20、確率（繁殖率）で分裂してエネルギーを分け、0未満で死ぬ。周期境界の格子上で、局所的な絶滅と再侵入の波が広がる（全滅した種はごく稀に外から移入する）。左のグラフは草/4（緑）・羊（白）・狼×4（赤）の個体数、右は羊–狼の位相平面。',
+  notes: '草はセルごとに「生えている／再生待ち」で、食べられると再生速度に応じた時間で戻る。羊（白）と狼（赤）は毎ステップ8近傍へ動いて1のエネルギーを使い、羊は草を食べて +4、狼は同じセルの羊を食べて +20、確率（繁殖率）で分裂してエネルギーを分け、0未満で死ぬ。周期境界の格子上で、局所的な絶滅と再侵入の波が広がる（全滅した種はごく稀に外から移入する）。左のグラフは草/4（緑）・羊（白）・狼×4（赤）の個体数、右は羊–狼の位相平面（範囲は自動調整）。',
   params: [
     { key: 'regrow', label: '草の再生速度（1/再生時間）', type: 'number', min: 0.01, max: 0.2, step: 0.005, default: 0.05 },
     { key: 'sheepRep', label: '草食の繁殖率', type: 'number', min: 0.01, max: 0.15, step: 0.005, default: 0.08 },
@@ -160,7 +160,7 @@ export default defineWorldDemo({
     const pre = mk();
     const cur = mk();
     const tChart = new TimeChart([0x50c060, 0xf0f0f0, 0xe04040], { ...chartSlot(size, 0), cap: 300 });
-    const phase = new XYTrace(0xffc060, { ...chartSlot(size, 1), cap: 400 });
+    const phase = new PhaseTrace(0xffc060, { ...chartSlot(size, 1), cap: 400 });
     const push = () => {
       tChart.push([grassCount() / 4, sheep.n, wolves.n * 4]);
       phase.push(sheep.n, wolves.n);
